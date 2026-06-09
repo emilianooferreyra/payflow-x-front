@@ -1,31 +1,37 @@
-import { Geist, Geist_Mono, Public_Sans, DM_Sans } from "next/font/google"
-
-import "./globals.css"
+import type { Metadata } from "next"
+import { DM_Sans, Public_Sans, Geist_Mono } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
-import { cn } from "@/lib/utils";
+import { QueryProvider } from "@/providers/query-provider"
+import { Toaster } from "@/components/ui/sonner"
+import { cn } from "@/lib/utils"
+import "./globals.css"
 
-const dmSansHeading = DM_Sans({subsets:['latin'],variable:'--font-heading'});
+const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-heading" })
+const publicSans = Public_Sans({ subsets: ["latin"], variable: "--font-sans" })
+const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" })
 
-const publicSans = Public_Sans({subsets:['latin'],variable:'--font-sans'})
-
-const fontMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-})
+export const metadata: Metadata = {
+  title: {
+    default: "PayFlow",
+    template: "%s | PayFlow",
+  },
+  description: "Multi-currency wallets, investments and exchange for freelancers.",
+}
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", publicSans.variable, dmSansHeading.variable)}
+      className={cn("antialiased", publicSans.variable, dmSans.variable, geistMono.variable)}
     >
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <QueryProvider>{children}</QueryProvider>
+          <Toaster richColors position="bottom-right" />
+        </ThemeProvider>
       </body>
     </html>
   )
