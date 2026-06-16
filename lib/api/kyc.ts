@@ -10,3 +10,8 @@ export async function submitKyc(documentType: string): Promise<KycInfo> {
   const { data } = await api.post<KycInfo>("/kyc/submit", { documentType })
   return data
 }
+
+export async function reviewKyc(action: "approve" | "reject"): Promise<KycInfo> {
+  const { data } = await api.post<KycInfo>("/kyc/review", { action })
+  return data
+}

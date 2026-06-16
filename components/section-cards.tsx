@@ -114,14 +114,14 @@ export function SectionCards() {
             {pnl ? fmt(pnl.totalValue, "USD") : "—"}
           </CardTitle>
           <CardAction>
-            <Badge variant="outline" className={pnlPositive ? "text-emerald-500" : "text-destructive"}>
+            <Badge variant="outline" className={pnlPositive ? "text-positive" : "text-destructive"}>
               {pnlPositive ? <RiArrowUpLine /> : <RiArrowDownLine />}
               {pnl ? `${pnlPositive ? "+" : ""}${pnl.totalPnLPercent}%` : "—"}
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className={`font-medium ${pnlPositive ? "text-emerald-500" : "text-destructive"}`}>
+          <div className={`font-medium ${pnlPositive ? "text-positive" : "text-destructive"}`}>
             {pnl ? `${pnlPositive ? "+" : ""}${fmt(pnl.totalPnL, "USD")} total P&L` : "—"}
           </div>
           <div className="text-muted-foreground">

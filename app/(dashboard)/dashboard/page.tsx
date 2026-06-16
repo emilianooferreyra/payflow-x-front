@@ -1,75 +1,78 @@
 "use client"
 
 import Link from "next/link"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Skeleton } from "@/components/ui/skeleton"
-import {
-  RiRefreshLine,
-  RiArrowRightSLine,
-  RiArrowUpLine,
-  RiFileList3Line,
-  RiArrowUpBoxLine,
-  RiArrowDownBoxLine,
-  RiCalendar2Line,
-  RiWallet2Line,
-  RiShieldLine,
-  RiCheckboxCircleLine,
-} from "@remixicon/react"
-import dynamic from "next/dynamic"
+import { useQuery } from "@tanstack/react-query"
 import { getMe } from "@/lib/api/auth"
 import { getWallets } from "@/lib/api/wallet"
 import { getTransactions } from "@/lib/api/transactions"
 import { formatCurrency } from "@/lib/utils"
-import type { KycStatus } from "@/lib/api/auth"
+import {
+  RiArrowRightUpLine,
+  RiArrowDownLine,
+  RiArrowRightSLine,
+  RiRefreshLine,
+  RiWallet3Line,
+  RiArrowUpDownLine,
+  RiBankLine,
+  RiPercentLine,
+  RiCoinLine,
+  RiCalendarLine,
+} from "@remixicon/react"
 
-const KYC_STATUS: Record<KycStatus, { label: string; variant: "default" | "secondary" | "outline" | "destructive"; description: string }> = {
-  PENDING: { label: "Pendiente", variant: "outline", description: "Completá tu verificación de identidad para operar" },
-  IN_REVIEW: { label: "En revisión", variant: "secondary", description: "Estamos revisando tu documentación" },
-  APPROVED: { label: "Verificada", variant: "default", description: "Tu identidad está verificada" },
-  REJECTED: { label: "Rechazada", variant: "destructive", description: "Volvé a enviar tu documentación" },
-}
+const chartData = [
+  { label: "Sep", value: 8200 },
+  { label: "Oct", value: 8500 },
+  { label: "Nov", value: 9100 },
+  { label: "Dec", value: 8800 },
+  { label: "Jan", value: 9300 },
+  { label: "Feb", value: 9604 },
+]
 
-const YieldChart = dynamic(
-  () => import("./_components/yield-chart").then((m) => ({ default: m.YieldChart })),
-  { ssr: false, loading: () => <Skeleton className="h-52 w-full" /> },
-)
+function ChartPath({ data, width, height }: { data: { value: number }[]; width: number; height: number }) {
+  const max = Math.max(...data.map((d) => d.value))
+  const min = Math.min(...data.map((d) => d.value))
+  const range = max - min || 1
+  const padding = 4
+  const chartW = width - padding * 2
+  const chartH = height - padding * 2
 
-const USD_APY = 3.65
+  const points = data.map((d, i) => {
+    const x = padding + (i / (data.length - 1)) * chartW
+    const y = padding + chartH - ((d.value - min) / range) * chartH
+    return { x, y }
+  })
 
-function groupYieldByMonth(transactions: { type: string; amount: string; currency: string; createdAt: string }[]) {
-  const groups: Record<string, { label: string; amount: number }> = {}
+  const lineD = points.map((p, i) => {
+    if (i === 0) return `M ${p.x} ${p.y}`
+    const prev = points[i - 1]
+    const cx = (prev.x + p.x) / 2
+    return `Q ${cx} ${prev.y} ${p.x} ${p.y}`
+  }).join(" ")
 
-  for (const tx of transactions) {
-    if (tx.type !== "YIELD" || tx.currency !== "USD") continue
-    const date = new Date(tx.createdAt)
-    const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`
-    const label = date.toLocaleDateString("es-AR", { month: "short" })
-      .replace(".", "")
-      .replace(/^\w/, (c) => c.toUpperCase())
-    if (!groups[key]) groups[key] = { label, amount: 0 }
-    groups[key].amount += Number(tx.amount)
-  }
+  const areaD = `${lineD} L ${points[points.length - 1].x} ${height - padding} L ${points[0].x} ${height - padding} Z`
 
-  let cumulative = 0
-  return Object.entries(groups)
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([, v]) => {
-      cumulative += v.amount
-      return { month: v.label, rendimiento: parseFloat(cumulative.toFixed(4)) }
-    })
+  return (
+    <svg width="100%" height={height} viewBox={`0 0 ${width} ${height}`} className="overflow-visible" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="chart-gradient" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#7C3AED" stopOpacity="0.25" />
+          <stop offset="100%" stopColor="#7C3AED" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <path d={areaD} fill="url(#chart-gradient)" />
+      <path d={lineD} fill="none" stroke="#7C3AED" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      {points.map((p, i) => (
+        <circle key={i} cx={p.x} cy={p.y} r="3.5" fill="#7C3AED" stroke="white" strokeWidth="2" />
+      ))}
+    </svg>
+  )
 }
 
 export default function DashboardPage() {
-  const qc = useQueryClient()
-
-  const { data: wallets, isLoading: walletsLoading } = useQuery({
+  const { data: wallets, isLoading } = useQuery({
     queryKey: ["wallets"],
     queryFn: getWallets,
   })
-
   const { data: user } = useQuery({
     queryKey: ["me"],
     queryFn: getMe,
@@ -77,255 +80,284 @@ export default function DashboardPage() {
     retry: false,
   })
 
-  const { data: txData, isLoading: txLoading } = useQuery({
-    queryKey: ["transactions", 1, "", ""],
-    queryFn: () => getTransactions({ page: 1, limit: 100 }),
+  const usdBalance = Number(wallets?.find((w) => w.currency === "USD")?.balance ?? 0)
+
+  const { data: recentTxns } = useQuery({
+    queryKey: ["recent-transactions"],
+    queryFn: () => getTransactions({ page: 1, limit: 5 }),
   })
 
-  const usd = wallets?.find((w) => w.currency === "USD")
-  const usdBalance = Number(usd?.balance ?? 0)
-
-  const allTx = txData?.data ?? []
-
-  const totalYield = allTx
-    .filter((tx) => tx.type === "YIELD" && tx.currency === "USD")
-    .reduce((sum, tx) => sum + Number(tx.amount), 0)
-
-  const now = new Date()
-  const thisMonthYield = allTx
-    .filter((tx) => {
-      if (tx.type !== "YIELD" || tx.currency !== "USD") return false
-      const d = new Date(tx.createdAt)
-      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()
-    })
-    .reduce((sum, tx) => sum + Number(tx.amount), 0)
-
-  const chartData = txData?.data ? groupYieldByMonth(txData.data) : []
-
-  const intPart = formatCurrency(usdBalance).replace(/\.\d+$/, "")
-  const decPart = formatCurrency(usdBalance).match(/\.(\d+)$/)?.[1] ?? "00"
+  const pendingAmount = recentTxns?.data
+    ?.filter((tx) => tx.status === "PENDING" && tx.type !== "WITHDRAWAL")
+    ?.reduce((sum, tx) => sum + Number(tx.amount), 0) ?? 0
 
   return (
-    <main className="flex flex-1 flex-col">
-      <div className="flex flex-1 flex-col gap-4 p-4 lg:p-5">
+    <div className="flex-1 bg-[#FAFAFA]">
+      <div className="mx-auto max-w-5xl px-6 py-8 lg:px-8 lg:py-10">
 
-        {/* KYC Status */}
-        {user?.kyc && user.kyc.status !== "APPROVED" && (
-          <Link href="/kyc">
-            <Card className="hover:bg-muted/50 transition-colors cursor-pointer border-amber-500/30 bg-amber-500/5">
-              <CardContent className="flex items-center gap-3 p-3">
-                <RiShieldLine className="size-5 text-amber-500 shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium">{KYC_STATUS[user.kyc.status].description}</p>
-                </div>
-                <Badge variant={KYC_STATUS[user.kyc.status].variant}>
-                  {KYC_STATUS[user.kyc.status].label}
-                </Badge>
-                <RiArrowRightSLine className="size-4 text-muted-foreground shrink-0" />
-              </CardContent>
-            </Card>
-          </Link>
-        )}
-
-        {user?.kyc && user.kyc.status === "APPROVED" && (
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <RiCheckboxCircleLine className="size-3.5 text-emerald-500" />
-            <span>Identidad verificada</span>
-          </div>
-        )}
-
-        {/* Actualizar */}
-        <div className="flex justify-end">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-muted-foreground gap-1.5"
-            onClick={() => {
-              qc.invalidateQueries({ queryKey: ["me"] })
-              qc.invalidateQueries({ queryKey: ["wallets"] })
-              qc.invalidateQueries({ queryKey: ["transactions"] })
-            }}
-          >
-            <RiRefreshLine className="size-4" />
-            Actualizar
-          </Button>
+        {/* ─── Top Bar ─── */}
+        <div className="flex items-center justify-end mb-8">
+          <button className="flex items-center gap-1.5 text-xs font-semibold text-[#666666] hover:text-[#111111] transition-colors">
+            <RiRefreshLine className="size-3.5" />
+            Refresh
+          </button>
         </div>
 
-        {/* Hero row: Balance + Quick actions */}
-        <div className="grid gap-4 lg:grid-cols-[1fr_300px]">
+        {/* ─── Main Grid: Balance + Quick Actions ─── */}
+        <div className="grid gap-6 lg:grid-cols-[2fr_1fr] mb-10">
 
-          {/* Balance */}
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="flex size-9 items-center justify-center rounded-sm bg-primary/10">
-                  <RiWallet2Line className="size-5 text-primary" />
+          {/* Balance Hero Card */}
+          <div className="rounded-2xl bg-white p-7 lg:p-8">
+            {/* Header */}
+            <div className="flex items-center gap-3 mb-4">
+              <div className="flex size-10 items-center justify-center rounded-xl bg-[#7C3AED]/10">
+                <RiWallet3Line className="size-5 text-[#7C3AED]" />
+              </div>
+              <span className="text-xs font-medium text-[#666666]">Balance</span>
+            </div>
+
+            {/* Balance + Yield */}
+            {isLoading ? (
+              <div className="h-14 w-56 animate-pulse rounded-lg bg-[#F5F5F5] mb-4" />
+            ) : (
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-baseline">
+                  <span className="text-5xl font-extrabold tabular-nums tracking-tight text-[#111111]">
+                    {formatCurrency(usdBalance).replace(/\.\d+$/, "")}
+                  </span>
+                  <span className="text-2xl font-extrabold tabular-nums tracking-tight text-[#999999]">
+                    .{String(usdBalance.toFixed(2)).split(".")[1] ?? "00"}
+                  </span>
                 </div>
-                <p className="text-sm font-bold text-black">Balance</p>
+                <span className="inline-flex items-center gap-1 rounded-full bg-[#22C55E]/15 px-2.5 py-0.5 text-xs font-semibold text-[#22C55E]">
+                  ↗ 3% APY
+                </span>
+              </div>
+            )}
+
+            {/* Account identifier + details link */}
+            <div className="flex items-center gap-2.5">
+              <span className="inline-flex items-center rounded-full bg-[#7C3AED]/10 px-3 py-1 text-xs font-semibold text-[#7C3AED]">
+                USD Digital
+              </span>
+              <Link
+                href="/depositar"
+                className="inline-flex items-center gap-1 text-xs font-medium text-[#999999] hover:text-[#666666] transition-colors"
+              >
+                <RiBankLine className="size-3.5" />
+                View account details
+                <RiArrowRightSLine className="size-3.5" />
+              </Link>
+            </div>
+          </div>
+
+          {/* Quick Actions */}
+          <div className="space-y-3">
+            <Link
+              href="/transacciones"
+              className="flex items-center gap-4 rounded-2xl border border-[#E5E5E5] bg-white p-5 hover:border-[#d0d0d0] hover:shadow-sm transition-all group"
+            >
+              <div className="flex size-10 items-center justify-center rounded-xl bg-[#F5F5F5] group-hover:bg-[#7C3AED]/10 transition-colors">
+                <RiArrowUpDownLine className="size-4 text-[#666666] group-hover:text-[#7C3AED]" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-[#111111]">Transactions</p>
+                <p className="text-xs text-[#666666] mt-0.5">View account activity</p>
+              </div>
+              <RiArrowRightSLine className="size-4 text-[#666666] group-hover:text-[#7C3AED]" />
+            </Link>
+
+            <Link
+              href="/retirar"
+              className="flex items-center gap-4 rounded-2xl border border-[#E5E5E5] bg-white p-5 hover:border-[#d0d0d0] hover:shadow-sm transition-all group"
+            >
+              <div className="flex size-10 items-center justify-center rounded-xl bg-[#F5F5F5] group-hover:bg-[#7C3AED]/10 transition-colors">
+                <RiArrowRightUpLine className="size-4 text-[#666666] group-hover:text-[#7C3AED]" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-[#111111]">Withdraw</p>
+                <p className="text-xs text-[#666666] mt-0.5">Send funds externally</p>
+              </div>
+              <RiArrowRightSLine className="size-4 text-[#666666] group-hover:text-[#7C3AED]" />
+            </Link>
+
+            <Link
+              href="/depositar"
+              className="flex items-center gap-4 rounded-2xl border border-[#E5E5E5] bg-white p-5 hover:border-[#d0d0d0] hover:shadow-sm transition-all group"
+            >
+              <div className="flex size-10 items-center justify-center rounded-xl bg-[#F5F5F5] group-hover:bg-[#7C3AED]/10 transition-colors">
+                <RiArrowDownLine className="size-4 text-[#666666] group-hover:text-[#7C3AED]" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-[#111111]">Deposit</p>
+                <p className="text-xs text-[#666666] mt-0.5">Add funds to your account</p>
+              </div>
+              <RiArrowRightSLine className="size-4 text-[#666666] group-hover:text-[#7C3AED]" />
+            </Link>
+          </div>
+        </div>
+
+        {/* ─── Yields ─── */}
+        <div className="mb-10">
+          <div className="flex items-center gap-2 mb-5">
+            <h2 className="text-sm font-semibold text-[#111111] tracking-wide uppercase">Yields</h2>
+            <span className="flex items-center gap-1 text-xs text-[#22C55E]">
+              <span className="inline-flex size-1.5 rounded-full bg-[#22C55E]" />
+              Active
+            </span>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="rounded-xl border border-[#E5E5E5] bg-white p-4 flex items-center gap-4">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#7C3AED]/10">
+                <RiPercentLine className="size-4.5 text-[#7C3AED]" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-medium text-[#666666]">Annual Rate</p>
+                <p className="text-xl font-bold text-[#111111] mt-0.5">3%</p>
+              </div>
+            </div>
+            <div className="rounded-xl border border-[#E5E5E5] bg-white p-4 flex items-center gap-4">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#7C3AED]/10">
+                <RiCoinLine className="size-4.5 text-[#7C3AED]" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-medium text-[#666666]">Total Earned</p>
+                <p className="text-xl font-bold text-[#111111] mt-0.5">$12.02</p>
+              </div>
+            </div>
+            <div className="rounded-xl border border-[#E5E5E5] bg-white p-4 flex items-center gap-4">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#7C3AED]/10">
+                <RiCalendarLine className="size-4.5 text-[#7C3AED]" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-medium text-[#666666]">Generated This Month</p>
+                <p className="text-xl font-bold text-[#111111] mt-0.5">$0.00</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ─── Mini Ledger ─── */}
+        <div className="grid gap-6 mb-10 lg:grid-cols-[2.5fr_1.5fr]">
+
+          {/* Recent Activity */}
+          <div className="rounded-2xl border border-[#E5E5E5] bg-white p-6 lg:p-7">
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="text-sm font-semibold text-[#111111] tracking-wide uppercase">Recent Activity</h2>
+              <Link
+                href="/transacciones"
+                className="inline-flex items-center gap-1 text-xs font-medium text-[#666666] hover:text-[#7C3AED] transition-colors"
+              >
+                View all
+                <RiArrowRightSLine className="size-3.5" />
+              </Link>
+            </div>
+
+            {!recentTxns ? (
+              <div className="space-y-3">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="h-10 animate-pulse rounded-lg bg-[#F5F5F5]" />
+                ))}
+              </div>
+            ) : recentTxns.data.length === 0 ? (
+              <p className="text-sm text-[#666666] py-6 text-center">No activity yet.</p>
+            ) : (
+              <div className="space-y-0.5">
+                {recentTxns.data.slice(0, 5).map((tx) => {
+                  const isInflow = tx.type === "DEPOSIT" || tx.type === "YIELD"
+                  return (
+                    <Link
+                      key={tx.id}
+                      href="/transacciones"
+                      className="flex items-center gap-3 rounded-xl px-3 py-2.5 hover:bg-[#F5F5F5] transition-colors -mx-3"
+                    >
+                      <div className={`flex size-8 shrink-0 items-center justify-center rounded-lg ${
+                        isInflow ? "bg-[#7C3AED]/10" : "bg-[#E5484D]/10"
+                      }`}>
+                        {isInflow ? (
+                          <RiArrowDownLine className="size-3.5 text-[#7C3AED]" />
+                        ) : (
+                          <RiArrowRightUpLine className="size-3.5 text-[#E5484D]" />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-[#111111] truncate">
+                          {tx.description || tx.type}
+                        </p>
+                        <p className="text-xs text-[#666666]">
+                          {new Date(tx.createdAt).toLocaleDateString("en-US", {
+                            month: "short", day: "numeric",
+                          })}
+                        </p>
+                      </div>
+                      <p className={`text-sm font-semibold tabular-nums ${
+                        isInflow ? "text-[#7C3AED]" : "text-[#111111]"
+                      }`}>
+                        {isInflow ? "+" : "-"}{formatCurrency(tx.amount, tx.currency)}
+                      </p>
+                    </Link>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Balance Summary */}
+          <div className="rounded-2xl border border-[#E5E5E5] bg-white p-6 lg:p-7">
+            <div className="flex items-center gap-2 mb-5">
+              <h2 className="text-sm font-semibold text-[#111111] tracking-wide uppercase">Balance Summary</h2>
+            </div>
+
+            <div className="space-y-4">
+              <div className="rounded-xl bg-[#F5F5F5] p-4">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs font-medium text-[#666666]">Available</span>
+                  <span className="inline-flex size-1.5 rounded-full bg-[#22C55E]" />
+                </div>
+                <p className="text-2xl font-bold text-[#111111]">
+                  {formatCurrency(usdBalance)}
+                </p>
               </div>
 
-              {walletsLoading ? (
-                <>
-                  <Skeleton className="h-12 w-56 mb-4" />
-                  <Skeleton className="h-5 w-44" />
-                </>
-              ) : (
-                <>
-                  <div className="flex items-baseline gap-1.5 mb-2">
-                    <span className="text-5xl font-bold tabular-nums tracking-tight">{intPart}</span>
-                    <span className="text-2xl font-bold text-black tabular-nums">.{decPart}</span>
-                    <Badge className="ml-2 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-0 gap-1 text-xs font-bold">
-                      <RiArrowUpLine className="size-3" />
-                      {USD_APY}% APY
-                    </Badge>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Badge variant="secondary" className="text-xs font-semibold">USD Digital</Badge>
-                    <Link
-                      href="/wallet"
-                      className="text-sm font-semibold text-muted-foreground hover:text-foreground flex items-center gap-0.5 transition-colors"
-                    >
-                      Ver información de la cuenta
-                      <RiArrowRightSLine className="size-4" />
-                    </Link>
-                  </div>
-                </>
-              )}
-            </CardContent>
-          </Card>
+              <div className="rounded-xl bg-[#F5F5F5] p-4">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs font-medium text-[#666666]">Pending</span>
+                  <span className="inline-flex size-1.5 rounded-full bg-[#E5A500]" />
+                </div>
+                <p className="text-2xl font-bold text-[#111111]">
+                  {formatCurrency(pendingAmount)}
+                </p>
+                <p className="text-xs text-[#666666] mt-1">
+                  Deposits settling from recent activity
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
 
-          {/* Quick actions */}
-          <div className="flex flex-col gap-3">
-            {[
-              {
-                href: "/transactions",
-                icon: RiFileList3Line,
-                label: "Transacciones",
-                description: "Consulta el historial de movimientos",
-              },
-              {
-                href: "/retirar",
-                icon: RiArrowUpBoxLine,
-                label: "Retiros",
-                description: "Envía fondos a cuentas externas",
-              },
-              {
-                href: "/depositar",
-                icon: RiArrowDownBoxLine,
-                label: "Depósitos",
-                description: "Agrega fondos a tu cuenta",
-              },
-            ].map((item) => (
-              <Link key={item.href} href={item.href}>
-                <Card className="hover:bg-muted/50 transition-colors cursor-pointer h-full">
-                  <CardContent className="flex items-center gap-4 px-4">
-                    <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-                      <item.icon className="size-5 text-primary" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-bold leading-tight">{item.label}</p>
-                      <p className="text-xs font-semibold text-muted-foreground truncate mt-0.5">{item.description}</p>
-                    </div>
-                    <RiArrowRightSLine className="size-4 text-muted-foreground shrink-0" />
-                  </CardContent>
-                </Card>
-              </Link>
+        {/* ─── Performance Chart ─── */}
+        <div className="rounded-2xl border border-[#E5E5E5] bg-white p-6 lg:p-7">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-sm font-semibold text-[#111111] tracking-wide uppercase">Monthly History</h2>
+            <span className="inline-flex items-center gap-1 rounded-full bg-[#F5F5F5] px-3 py-1 text-xs font-semibold text-[#666666]">
+              3 Months
+              <RiArrowRightSLine className="size-3.5" />
+            </span>
+          </div>
+
+          <div className="w-full">
+            <ChartPath data={chartData} width={600} height={180} />
+          </div>
+
+          {/* X-axis labels */}
+          <div className="flex justify-between mt-2 px-1">
+            {chartData.map((d) => (
+              <span key={d.label} className="text-xs text-[#666666]">{d.label}</span>
             ))}
           </div>
         </div>
 
-        {/* Rendimientos */}
-        <div>
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2.5">
-              <h2 className="text-base font-bold">Rendimientos</h2>
-              <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-0 font-bold gap-1.5 text-xs px-2 py-0.5">
-                <span className="size-1.5 rounded-full bg-emerald-500 inline-block" />
-                Activo
-              </Badge>
-            </div>
-            <p className="text-xs font-semibold text-muted-foreground hidden lg:block">
-              Los rendimientos de este mes se acreditarán el primer día del próximo mes.
-            </p>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-3">
-            {txLoading ? (
-              Array.from({ length: 3 }).map((_, i) => (
-                <Card key={i}>
-                  <CardContent className="flex items-center gap-4 px-2">
-                    <Skeleton className="size-12 rounded-xl shrink-0" />
-                    <div>
-                      <Skeleton className="h-3 w-20 mb-2" />
-                      <Skeleton className="h-7 w-24" />
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            ) : (
-              <>
-                <Card>
-                  <CardContent className="flex items-center gap-4 px-4">
-                    <div className="flex size-12 shrink-0 items-center justify-center rounded-sm bg-primary/10">
-                      <span className="text-xl font-bold text-primary leading-none">%</span>
-                    </div>
-                    <div>
-                      <p className="text-md text-black font-bold mb-1">Tasa anual</p>
-                      <p className="text-2xl font-semibold tabular-nums">{USD_APY}%</p>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardContent className="flex items-center gap-4 px-4">
-                    <div className="flex size-12 shrink-0 items-center justify-center rounded-sm bg-primary/10">
-                      <span className="text-xl font-bold text-primary leading-none">$</span>
-                    </div>
-                    <div>
-                      <p className="text-md font-bold text-black mb-1">Total generado</p>
-                      <p className="text-2xl font-semibold tabular-nums">{formatCurrency(totalYield)}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardContent className="flex items-center gap-4 px-4">
-                    <div className="flex size-12 shrink-0 items-center justify-center rounded-sm bg-primary/10">
-                      <RiCalendar2Line className="size-5 text-primary" />
-                    </div>
-                    <div>
-                      <p className="text-md font-bold text-black mb-1">Generado este mes</p>
-                      <p className="text-2xl font-semibold tabular-nums">{formatCurrency(thisMonthYield)}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </>
-            )}
-          </div>
-        </div>
-
-        {/* Historial mensual */}
-        <Card>
-          <CardHeader className="pb-2">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-sm font-medium">Historial mensual</CardTitle>
-              <p className="text-xs text-muted-foreground">3 meses</p>
-            </div>
-          </CardHeader>
-          <CardContent>
-            {txLoading ? (
-              <Skeleton className="h-52 w-full" />
-            ) : chartData.length === 0 ? (
-              <div className="flex h-52 items-center justify-center text-sm text-muted-foreground">
-                Sin datos de rendimiento aún.
-              </div>
-            ) : (
-              <YieldChart data={chartData} />
-            )}
-          </CardContent>
-        </Card>
-
       </div>
-    </main>
+    </div>
   )
 }

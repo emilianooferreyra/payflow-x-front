@@ -65,19 +65,19 @@ export function NavUser() {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="data-[state=open]:bg-[#F5F5F5] data-[state=open]:text-[#111111] hover:bg-[#F5F5F5] hover:text-[#111111]"
             >
               <Avatar className="size-8 rounded-lg">
                 {user?.avatar && <AvatarImage src={user.avatar} alt={displayName} />}
-                <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-xs font-semibold">
+                <AvatarFallback className="rounded-lg bg-[#F5F5F5] text-[#666666] text-xs font-semibold">
                   {initials}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{displayName}</span>
-                <span className="truncate text-xs text-muted-foreground">{user?.email}</span>
+                <span className="truncate font-medium text-[#111111]">{displayName}</span>
+                <span className="truncate text-xs text-[#666666]">{user?.email}</span>
               </div>
-              <RiMoreLine className="ml-auto size-4 text-muted-foreground" />
+              <RiMoreLine className="ml-auto size-4 text-[#666666]" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
 

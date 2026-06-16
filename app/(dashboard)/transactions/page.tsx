@@ -2,47 +2,54 @@
 
 import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
-
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
-import { RiArrowLeftLine, RiArrowRightLine } from "@remixicon/react"
+import { RiArrowLeftLine, RiArrowRightLine, RiArrowDownSLine, RiArrowUpLine, RiArrowDownLine } from "@remixicon/react"
 import { getTransactions } from "@/lib/api/transactions"
 import { formatCurrency } from "@/lib/utils"
+import { TransactionTimeline } from "./_components/timeline"
 
 const TYPE_LABELS: Record<string, string> = {
-  DEPOSIT: "Depósito",
-  WITHDRAWAL: "Retiro",
-  EXCHANGE: "Conversión",
-  INVESTMENT_BUY: "Compra",
-  INVESTMENT_SELL: "Venta",
-  YIELD: "Rendimiento",
-  TRANSFER: "Transferencia",
+  DEPOSIT: "Deposit",
+  WITHDRAWAL: "Withdrawal",
+  EXCHANGE: "Exchange",
+  INVESTMENT_BUY: "Investment",
+  INVESTMENT_SELL: "Sale",
+  YIELD: "Yield",
+  TRANSFER: "Transfer",
 }
 
 const TYPE_COLORS: Record<string, string> = {
-  DEPOSIT: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
-  WITHDRAWAL: "bg-destructive/10 text-destructive",
-  EXCHANGE: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
-  INVESTMENT_BUY: "bg-violet-500/10 text-violet-600 dark:text-violet-400",
-  INVESTMENT_SELL: "bg-orange-500/10 text-orange-600 dark:text-orange-400",
-  YIELD: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
-  TRANSFER: "bg-muted text-muted-foreground",
+  DEPOSIT: "bg-[#7C3AED]/10 text-[#7C3AED]",
+  WITHDRAWAL: "bg-[#E5484D]/10 text-[#E5484D]",
+  EXCHANGE: "bg-[#7C3AED]/10 text-[#7C3AED]",
+  INVESTMENT_BUY: "bg-[#7C3AED]/10 text-[#7C3AED]",
+  INVESTMENT_SELL: "bg-[#E5A500]/10 text-[#E5A500]",
+  YIELD: "bg-[#22C55E]/10 text-[#22C55E]",
+  TRANSFER: "bg-[#F5F5F5] text-[#666666]",
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  COMPLETED: "text-emerald-600 dark:text-emerald-400",
-  PENDING: "text-amber-600 dark:text-amber-400",
-  FAILED: "text-destructive",
-  CANCELLED: "text-muted-foreground",
+const STATUS_LABELS: Record<string, string> = {
+  COMPLETED: "Completed",
+  PENDING: "Pending",
+  FAILED: "Failed",
+  CANCELLED: "Cancelled",
+}
+
+const TYPE_ICONS: Record<string, typeof RiArrowDownLine> = {
+  DEPOSIT: RiArrowDownLine,
+  WITHDRAWAL: RiArrowUpLine,
+}
+
+function getTypeIcon(type: string) {
+  return TYPE_ICONS[type] ?? RiArrowDownLine
 }
 
 export default function TransactionsPage() {
   const [page, setPage] = useState(1)
   const [currency, setCurrency] = useState("")
   const [type, setType] = useState("")
+  const [expandedId, setExpandedId] = useState<string | null>(null)
 
   const { data, isLoading } = useQuery({
     queryKey: ["transactions", page, currency, type],
@@ -59,112 +66,169 @@ export default function TransactionsPage() {
   function resetPage() { setPage(1) }
 
   return (
-    <main className="flex flex-1 flex-col">
+    <div className="flex-1 bg-[#FAFAFA]">
+      <div className="mx-auto max-w-4xl px-6 py-10 lg:px-8 lg:py-14">
 
-        <div className="flex flex-1 flex-col gap-6 p-4 lg:p-6">
-          <div>
-            <h1 className="text-2xl font-semibold">Transactions</h1>
-            <p className="text-muted-foreground text-sm">Your full activity history</p>
+        {/* ─── Page Header ─── */}
+        <div className="mb-10">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="inline-flex size-2 rounded-full bg-[#7C3AED]" />
+            <span className="text-xs font-medium text-[#666666] tracking-wide uppercase">
+              {data ? `${data.meta.total} transactions` : "Activity history"}
+            </span>
           </div>
+          <h1 className="text-4xl font-bold tracking-tight text-[#111111] sm:text-5xl">
+            Transactions
+          </h1>
+          <p className="mt-3 max-w-lg text-lg text-[#666666] leading-relaxed">
+            Your complete account activity.
+          </p>
+        </div>
 
-          <div className="flex flex-wrap gap-3">
-            <Select value={currency || "all"} onValueChange={(v) => { setCurrency(v === "all" ? "" : v); resetPage() }}>
-              <SelectTrigger className="w-36"><SelectValue placeholder="Currency" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All currencies</SelectItem>
-                <SelectItem value="USD">USD</SelectItem>
-                <SelectItem value="ARS">ARS</SelectItem>
-                <SelectItem value="USDT">USDT</SelectItem>
-              </SelectContent>
-            </Select>
+        {/* ─── Filters ─── */}
+        <div className="mb-6 flex flex-wrap gap-3">
+          <Select value={currency || "all"} onValueChange={(v) => { setCurrency(v === "all" ? "" : v); resetPage() }}>
+            <SelectTrigger className="w-36 border-[#E5E5E5] rounded-xl h-12 px-4 text-base bg-white">
+              <SelectValue placeholder="Currency" />
+            </SelectTrigger>
+            <SelectContent sideOffset={8}>
+              <SelectItem value="all" className="py-3">All currencies</SelectItem>
+              <SelectItem value="USD" className="py-3">USD</SelectItem>
+              <SelectItem value="ARS" className="py-3">ARS</SelectItem>
+              <SelectItem value="USDT" className="py-3">USDT</SelectItem>
+            </SelectContent>
+          </Select>
 
-            <Select value={type || "all"} onValueChange={(v) => { setType(v === "all" ? "" : v); resetPage() }}>
-              <SelectTrigger className="w-44"><SelectValue placeholder="Tipo" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos los tipos</SelectItem>
-                {Object.entries(TYPE_LABELS).map(([k, v]) => (
-                  <SelectItem key={k} value={k}>{v}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <Select value={type || "all"} onValueChange={(v) => { setType(v === "all" ? "" : v); resetPage() }}>
+            <SelectTrigger className="w-40 border-[#E5E5E5] rounded-xl h-12 px-4 text-base bg-white">
+              <SelectValue placeholder="Type" />
+            </SelectTrigger>
+            <SelectContent sideOffset={8}>
+              <SelectItem value="all" className="py-3">All types</SelectItem>
+              {Object.entries(TYPE_LABELS).map(([k, v]) => (
+                <SelectItem key={k} value={k} className="py-3">{v}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-          <Card>
-            <CardHeader className="pb-0">
-              <CardTitle className="text-base">
-                {data ? `${data.meta.total} transactions` : "Transactions"}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-4">
-              {isLoading ? (
-                <div className="space-y-3">
-                  {Array.from({ length: 8 }).map((_, i) => (
-                    <div key={i} className="flex items-center justify-between py-2">
-                      <div className="flex items-center gap-3">
-                        <Skeleton className="size-8 rounded-full" />
-                        <div className="space-y-1">
-                          <Skeleton className="h-4 w-24" />
-                          <Skeleton className="h-3 w-32" />
-                        </div>
-                      </div>
-                      <Skeleton className="h-4 w-20" />
-                    </div>
-                  ))}
+        {/* ─── Transaction Cards ─── */}
+        <div className="space-y-3">
+          {isLoading ? (
+            Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="rounded-2xl border border-[#E5E5E5] bg-white p-5">
+                <div className="flex items-center gap-3">
+                  <Skeleton className="size-10 rounded-xl bg-[#F5F5F5]" />
+                  <div className="space-y-1.5 flex-1">
+                    <Skeleton className="h-4 w-32 bg-[#F5F5F5]" />
+                    <Skeleton className="h-3 w-24 bg-[#F5F5F5]" />
+                  </div>
+                  <Skeleton className="h-5 w-20 bg-[#F5F5F5]" />
                 </div>
-              ) : data?.data.length === 0 ? (
-                <p className="py-12 text-center text-muted-foreground">No transactions found.</p>
-              ) : (
-                <div className="divide-y">
-                  {data?.data.map((tx) => (
-                    <div key={tx.id} className="flex items-center justify-between py-3">
-                      <div className="flex items-center gap-3">
-                        <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${TYPE_COLORS[tx.type] ?? "bg-muted text-muted-foreground"}`}>
+              </div>
+            ))
+          ) : data?.data.length === 0 ? (
+            <div className="rounded-2xl border border-[#E5E5E5] bg-white p-10 text-center">
+              <p className="text-sm text-[#666666]">No transactions found.</p>
+            </div>
+          ) : (
+            data?.data.map((tx) => {
+              const isDeposit = tx.type === "DEPOSIT" || tx.type === "YIELD"
+              const sign = isDeposit ? "+" : "-"
+              const amountColor = isDeposit ? "text-[#7C3AED]" : "text-[#111111]"
+              const isExpanded = expandedId === tx.id
+              const Icon = getTypeIcon(tx.type)
+
+              return (
+                <div key={tx.id} className="rounded-2xl border border-[#E5E5E5] bg-white overflow-hidden">
+                  {/* Card header (clickable) */}
+                  <button
+                    onClick={() => setExpandedId(isExpanded ? null : tx.id)}
+                    className="w-full flex items-center gap-4 p-5 text-left hover:bg-gray-50/50 transition-colors"
+                  >
+                    {/* Icon */}
+                    <div className={`flex size-10 shrink-0 items-center justify-center rounded-xl ${
+                      isDeposit ? "bg-[#7C3AED]/10" : "bg-[#E5484D]/10"
+                    }`}>
+                      <Icon className={`size-4.5 ${isDeposit ? "text-[#7C3AED]" : "text-[#E5484D]"}`} />
+                    </div>
+
+                    {/* Info */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${TYPE_COLORS[tx.type] ?? "bg-[#F5F5F5] text-[#666666]"}`}>
                           {TYPE_LABELS[tx.type] ?? tx.type}
                         </span>
-                        <div>
-                          <p className="text-sm font-medium leading-none">
-                            {tx.description || (TYPE_LABELS[tx.type] ?? tx.type)}
-                          </p>
-                          <div className="flex items-center gap-2 mt-0.5">
-                            <p className="text-xs text-muted-foreground">
-                              {new Date(tx.createdAt).toLocaleDateString("es-AR", {
-                                month: "short", day: "numeric", year: "numeric",
-                                hour: "2-digit", minute: "2-digit",
-                              })}
-                            </p>
-                            {tx.status && tx.status !== "COMPLETED" && (
-                              <span className={`text-xs font-medium ${STATUS_COLORS[tx.status] ?? "text-muted-foreground"}`}>
-                                · {tx.status === "PENDING" ? "Pendiente" : tx.status === "FAILED" ? "Fallido" : tx.status === "CANCELLED" ? "Cancelado" : tx.status}
-                              </span>
-                            )}
-                          </div>
-                        </div>
+                        <span className="text-xs text-[#666666]">
+                          {new Date(tx.createdAt).toLocaleDateString("en-US", {
+                            month: "short", day: "numeric", hour: "2-digit", minute: "2-digit",
+                          })}
+                        </span>
                       </div>
-                      <div className="text-right">
-                        <p className="text-sm font-semibold tabular-nums">{formatCurrency(tx.amount, tx.currency)}</p>
-                        <Badge variant="outline" className="text-xs mt-0.5">{tx.currency}</Badge>
-                      </div>
+                      <p className="text-sm font-medium text-[#111111] mt-0.5">
+                        {tx.description || (TYPE_LABELS[tx.type] ?? tx.type)}
+                      </p>
                     </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
 
-          {totalPages > 1 && (
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-muted-foreground">Page {page} of {totalPages}</p>
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm" disabled={page === 1} onClick={() => setPage((p) => p - 1)}>
-                  <RiArrowLeftLine className="mr-1.5 size-4" />Previous
-                </Button>
-                <Button variant="outline" size="sm" disabled={page === totalPages} onClick={() => setPage((p) => p + 1)}>
-                  Next<RiArrowRightLine className="ml-1.5 size-4" />
-                </Button>
-              </div>
-            </div>
+                    {/* Amount + expand */}
+                    <div className="text-right flex items-center gap-3">
+                      <div>
+                        <p className={`text-base font-bold tabular-nums ${amountColor}`}>
+                          {sign}{formatCurrency(tx.amount, tx.currency)}
+                        </p>
+                        {tx.status !== "COMPLETED" && (
+                          <p className="text-xs font-medium text-[#E5A500]">
+                            {STATUS_LABELS[tx.status] ?? tx.status}
+                          </p>
+                        )}
+                      </div>
+                      <RiArrowDownSLine className={`size-4 text-[#999999] transition-transform duration-200 ${
+                        isExpanded ? "rotate-180" : ""
+                      }`} />
+                    </div>
+                  </button>
+
+                  {/* Expanded timeline */}
+                  {isExpanded && (
+                    <div className="border-t border-[#E5E5E5] px-5 py-5 bg-[#FAFAFA]">
+                      <p className="text-xs font-semibold text-[#666666] tracking-wide uppercase mb-4">Transaction timeline</p>
+                      <TransactionTimeline type={tx.type} status={tx.status} />
+                    </div>
+                  )}
+                </div>
+              )
+            })
           )}
         </div>
-      </main>
+
+        {/* ─── Pagination ─── */}
+        {totalPages > 1 && (
+          <div className="mt-6 flex items-center justify-between">
+            <p className="text-sm text-[#666666]">Page {page} of {totalPages}</p>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                disabled={page === 1}
+                onClick={() => setPage((p) => p - 1)}
+                className="inline-flex h-10 items-center gap-1.5 rounded-xl border border-[#E5E5E5] bg-white px-4 text-sm font-semibold text-[#111111] hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+              >
+                <RiArrowLeftLine className="size-4" />
+                Previous
+              </button>
+              <button
+                type="button"
+                disabled={page === totalPages}
+                onClick={() => setPage((p) => p + 1)}
+                className="inline-flex h-10 items-center gap-1.5 rounded-xl border border-[#E5E5E5] bg-white px-4 text-sm font-semibold text-[#111111] hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+              >
+                Next
+                <RiArrowRightLine className="size-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
+      </div>
+    </div>
   )
 }

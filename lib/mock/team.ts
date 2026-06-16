@@ -25,10 +25,10 @@ export const ROLE_DESCRIPTIONS: Record<TeamRole, string> = {
 }
 
 export const ROLE_COLORS: Record<TeamRole, string> = {
-  owner: "bg-violet-500/10 text-violet-600 dark:text-violet-400",
-  admin: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
-  finance: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
-  viewer: "bg-muted text-muted-foreground",
+  owner: "bg-[#7C3AED]/10 text-[#7C3AED]",
+  admin: "bg-[#7C3AED]/10 text-[#7C3AED]",
+  finance: "bg-[#E5A500]/10 text-[#E5A500]",
+  viewer: "bg-[#F5F5F5] text-[#666666]",
 }
 
 export const mockTeamMembers: TeamMember[] = [

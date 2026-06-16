@@ -50,8 +50,8 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
         <Card className="overflow-hidden p-0">
           <CardContent className="grid p-0 md:grid-cols-2">
             <div className="flex flex-col items-center justify-center gap-4 p-6 text-center md:p-8">
-              <div className="flex size-16 items-center justify-center rounded-full bg-emerald-500/10">
-                <RiCheckboxCircleLine className="size-8 text-emerald-500" />
+              <div className="flex size-16 items-center justify-center rounded-full bg-positive/10">
+                <RiCheckboxCircleLine className="size-8 text-positive" />
               </div>
               <div className="space-y-1">
                 <h1 className="text-2xl font-bold">Account created!</h1>
@@ -64,7 +64,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
               </Button>
             </div>
             <div className="relative hidden flex-col items-start justify-end bg-sidebar p-10 md:flex">
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-950 via-sidebar to-sidebar" />
+              <div className="absolute inset-0 bg-gradient-to-br from-foreground/20 via-primary/5 to-sidebar" />
               <div className="absolute inset-0 opacity-5 [background-image:radial-gradient(circle,_currentColor_1px,_transparent_1px)] [background-size:24px_24px]" />
               <div className="relative space-y-2">
                 <p className="text-3xl font-bold">PayFlow</p>
@@ -195,7 +195,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
           </form>
 
           <div className="relative hidden flex-col items-start justify-end bg-sidebar p-10 md:flex">
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-950 via-sidebar to-sidebar" />
+            <div className="absolute inset-0 bg-gradient-to-br from-foreground/20 via-primary/5 to-sidebar" />
             <div className="absolute inset-0 opacity-5 [background-image:radial-gradient(circle,_currentColor_1px,_transparent_1px)] [background-size:24px_24px]" />
             <div className="relative space-y-2">
               <p className="text-3xl font-bold">PayFlow</p>

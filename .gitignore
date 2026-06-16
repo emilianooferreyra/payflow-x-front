@@ -11,6 +11,7 @@
 # AI
 .agents
 .claude
+.DESIGN.md
 skill-lock.json
 
 # testing

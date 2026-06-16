@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import {
@@ -91,6 +91,33 @@ function PendingView({ documentType, submittedAt }: KycCardProps) {
 }
 
 function InReviewView({ documentType, submittedAt }: KycCardProps) {
+  const qc = useQueryClient()
+  const notifiedRef = useRef(false)
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  useEffect(() => {
+    pollRef.current = setInterval(() => {
+      qc.invalidateQueries({ queryKey: ["me"] })
+    }, 5_000)
+    return () => {
+      if (pollRef.current) clearInterval(pollRef.current)
+    }
+  }, [qc])
+
+  const { data: user } = useQuery({
+    queryKey: ["me"],
+    queryFn: getMe,
+    staleTime: 0,
+    retry: false,
+  })
+
+  useEffect(() => {
+    if (user?.kyc?.status === "APPROVED" && !notifiedRef.current) {
+      notifiedRef.current = true
+      toast.success("Identidad verificada correctamente — ya podés operar", { duration: 6000 })
+    }
+  }, [user?.kyc?.status])
+
   return (
     <Card>
       <CardHeader>
@@ -117,6 +144,9 @@ function InReviewView({ documentType, submittedAt }: KycCardProps) {
             )}
           </div>
         </div>
+        <p className="text-xs text-muted-foreground text-center animate-pulse">
+          Verificando datos... Esto suele tomar unos segundos.
+        </p>
       </CardContent>
     </Card>
   )

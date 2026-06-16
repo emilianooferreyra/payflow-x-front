@@ -1,233 +1,93 @@
-"use client"
+import { RiMailLine, RiMessage2Line, RiBookOpenLine } from "@remixicon/react"
+import Link from "next/link"
 
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
-import { toast } from "sonner"
-
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { RiCustomerServiceLine, RiAddLine, RiArrowDownSLine, RiArrowUpSLine } from "@remixicon/react"
-import {
-  faqCategories,
-  mockTickets,
-  STATUS_LABELS,
-  STATUS_COLORS,
-  type SupportTicket,
-} from "@/lib/mock/support"
-
-const ticketSchema = z.object({
-  subject: z.string().min(5, "Describe el problema en al menos 5 caracteres"),
-  message: z.string().min(20, "El mensaje debe tener al menos 20 caracteres"),
-})
-type TicketInput = z.infer<typeof ticketSchema>
-
-function FaqCategory({ category }: { category: typeof faqCategories[0] }) {
-  const [open, setOpen] = useState<number | null>(null)
-
-  return (
-    <div className="space-y-1">
-      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide px-1 mb-2">
-        {category.label}
-      </p>
-      {category.items.map((item, i) => (
-        <div key={i} className="rounded-lg border overflow-hidden">
-          <button
-            className="flex w-full items-center justify-between p-4 text-left text-sm font-medium hover:bg-muted/50 transition-colors"
-            onClick={() => setOpen(open === i ? null : i)}
-          >
-            {item.question}
-            {open === i
-              ? <RiArrowUpSLine className="size-4 text-muted-foreground shrink-0" />
-              : <RiArrowDownSLine className="size-4 text-muted-foreground shrink-0" />
-            }
-          </button>
-          {open === i && (
-            <div className="px-4 pb-4 text-sm text-muted-foreground border-t bg-muted/20 pt-3">
-              {item.answer}
-            </div>
-          )}
-        </div>
-      ))}
-    </div>
-  )
-}
-
-function TicketRow({ ticket }: { ticket: SupportTicket }) {
-  const [expanded, setExpanded] = useState(false)
-
-  return (
-    <div className="border rounded-xl overflow-hidden mb-2">
-      <button
-        className="flex w-full items-center justify-between p-4 text-left hover:bg-muted/30 transition-colors"
-        onClick={() => setExpanded(!expanded)}
-      >
-        <div className="flex items-center gap-3">
-          <span className="text-xs font-mono text-muted-foreground">{ticket.id}</span>
-          <span className="text-sm font-medium">{ticket.subject}</span>
-        </div>
-        <div className="flex items-center gap-3 shrink-0">
-          <span className={`hidden sm:inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[ticket.status]}`}>
-            {STATUS_LABELS[ticket.status]}
-          </span>
-          <span className="text-xs text-muted-foreground">
-            {new Date(ticket.updatedAt).toLocaleDateString("es-AR", { day: "numeric", month: "short" })}
-          </span>
-          {expanded
-            ? <RiArrowUpSLine className="size-4 text-muted-foreground" />
-            : <RiArrowDownSLine className="size-4 text-muted-foreground" />
-          }
-        </div>
-      </button>
-      {expanded && (
-        <div className="px-4 pb-4 border-t bg-muted/20 pt-3">
-          <p className="text-xs text-muted-foreground mb-1">Última actualización</p>
-          <p className="text-sm">{ticket.lastMessage}</p>
-        </div>
-      )}
-    </div>
-  )
-}
+const channels = [
+  {
+    icon: RiMessage2Line,
+    title: "Live chat",
+    description: "Chat with our team in real time.",
+    action: "Start chat",
+    href: "#",
+  },
+  {
+    icon: RiMailLine,
+    title: "Email",
+    description: "Send us a message and we'll get back within 24h.",
+    action: "support@payflow.io",
+    href: "mailto:support@payflow.io",
+  },
+  {
+    icon: RiBookOpenLine,
+    title: "Help center",
+    description: "Guides, FAQs, and documentation.",
+    action: "Visit help center",
+    href: "/how-it-works",
+  },
+]
 
 export default function SoportePage() {
-  const [tickets, setTickets] = useState(mockTickets)
-  const [searchFaq, setSearchFaq] = useState("")
-
-  const { register: field, handleSubmit, reset, formState: { errors } } = useForm<TicketInput>({
-    resolver: zodResolver(ticketSchema),
-  })
-
-  function onSubmit(data: TicketInput) {
-    const newTicket: SupportTicket = {
-      id: `TKT-${1000 + tickets.length + 1}`,
-      subject: data.subject,
-      status: "open",
-      priority: "medium",
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      lastMessage: data.message,
-    }
-    setTickets((prev) => [newTicket, ...prev])
-    toast.success("Ticket creado. Te responderemos pronto.")
-    reset()
-  }
-
-  const filteredFaq = searchFaq.trim()
-    ? faqCategories.map((cat) => ({
-        ...cat,
-        items: cat.items.filter(
-          (item) =>
-            item.question.toLowerCase().includes(searchFaq.toLowerCase()) ||
-            item.answer.toLowerCase().includes(searchFaq.toLowerCase())
-        ),
-      })).filter((cat) => cat.items.length > 0)
-    : faqCategories
-
   return (
-    <main className="flex flex-1 flex-col">
+    <div className="flex-1 bg-[#FAFAFA]">
+      <div className="mx-auto max-w-3xl px-6 py-10 lg:px-8 lg:py-14">
 
-        <div className="flex flex-1 flex-col gap-6 p-4 lg:p-6">
-
-          <div className="flex items-center gap-3">
-            <div className="flex size-9 items-center justify-center rounded-xl bg-primary/10">
-              <RiCustomerServiceLine className="size-5 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-xl font-semibold">Soporte</h1>
-              <p className="text-sm text-muted-foreground">Centro de ayuda y tickets</p>
-            </div>
+        {/* Header */}
+        <div className="mb-12">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="inline-flex size-2 rounded-full bg-[#7C3AED]" />
+            <span className="text-xs font-medium text-[#666666] tracking-wide uppercase">
+              We're here to help
+            </span>
           </div>
-
-          <Tabs defaultValue="faq">
-            <TabsList>
-              <TabsTrigger value="faq">Centro de ayuda</TabsTrigger>
-              <TabsTrigger value="tickets">
-                Mis tickets
-                {tickets.filter((t) => t.status === "open" || t.status === "in_progress").length > 0 && (
-                  <span className="ml-1.5 inline-flex size-4 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground font-semibold">
-                    {tickets.filter((t) => t.status === "open" || t.status === "in_progress").length}
-                  </span>
-                )}
-              </TabsTrigger>
-              <TabsTrigger value="nuevo">Nuevo ticket</TabsTrigger>
-            </TabsList>
-
-            {/* FAQ */}
-            <TabsContent value="faq" className="mt-4">
-              <div className="mb-4">
-                <Input
-                  placeholder="Buscar en el centro de ayuda..."
-                  value={searchFaq}
-                  onChange={(e) => setSearchFaq(e.target.value)}
-                  className="max-w-md"
-                />
-              </div>
-              {filteredFaq.length === 0 ? (
-                <p className="text-sm text-muted-foreground py-8 text-center">
-                  No encontramos resultados para "{searchFaq}".
-                </p>
-              ) : (
-                <div className="grid gap-6 lg:grid-cols-2">
-                  {filteredFaq.map((cat) => (
-                    <FaqCategory key={cat.id} category={cat} />
-                  ))}
-                </div>
-              )}
-            </TabsContent>
-
-            {/* Tickets list */}
-            <TabsContent value="tickets" className="mt-4">
-              {tickets.length === 0 ? (
-                <p className="text-sm text-muted-foreground py-8 text-center">No tenés tickets abiertos.</p>
-              ) : (
-                <div>
-                  {tickets.map((ticket) => (
-                    <TicketRow key={ticket.id} ticket={ticket} />
-                  ))}
-                </div>
-              )}
-            </TabsContent>
-
-            {/* New ticket form */}
-            <TabsContent value="nuevo" className="mt-4">
-              <Card className="max-w-lg">
-                <CardHeader>
-                  <CardTitle className="text-base">Crear nuevo ticket</CardTitle>
-                  <CardDescription>
-                    Describí tu consulta y te responderemos en menos de 24 horas hábiles.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                    <div className="space-y-1.5">
-                      <Label>Asunto</Label>
-                      <Input placeholder="Ej: No puedo realizar un retiro" {...field("subject")} />
-                      {errors.subject && <p className="text-destructive text-xs">{errors.subject.message}</p>}
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label>Mensaje</Label>
-                      <textarea
-                        className="flex min-h-[120px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none"
-                        placeholder="Describí el problema con el mayor detalle posible..."
-                        {...field("message")}
-                      />
-                      {errors.message && <p className="text-destructive text-xs">{errors.message.message}</p>}
-                    </div>
-                    <Button type="submit" className="w-full gap-2">
-                      <RiAddLine className="size-4" />
-                      Enviar ticket
-                    </Button>
-                  </form>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
-
+          <h1 className="text-4xl font-bold tracking-tight text-[#111111] sm:text-5xl">
+            Soporte
+          </h1>
+          <p className="mt-3 max-w-lg text-lg text-[#666666] leading-relaxed">
+            Get in touch with our team or find answers on your own.
+          </p>
         </div>
-      </main>
+
+        {/* Channels */}
+        <div className="space-y-4">
+          {channels.map((channel) => (
+            <Link
+              key={channel.title}
+              href={channel.href}
+              className="flex items-center gap-5 rounded-2xl border border-[#E5E5E5] bg-white p-6 hover:border-[#d0d0d0] hover:shadow-sm transition-all group"
+            >
+              <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[#7C3AED]/10 group-hover:bg-[#7C3AED]/20 transition-colors">
+                <channel.icon className="size-5 text-[#7C3AED]" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-base font-semibold text-[#111111]">{channel.title}</p>
+                <p className="text-sm text-[#666666] mt-0.5">{channel.description}</p>
+              </div>
+              <span className="text-sm font-semibold text-[#7C3AED] group-hover:text-[#6D28D9]">
+                {channel.action}
+              </span>
+            </Link>
+          ))}
+        </div>
+
+        {/* FAQ Preview */}
+        <div className="mt-10 rounded-2xl border border-[#E5E5E5] bg-white p-7 lg:p-8">
+          <h2 className="text-sm font-semibold text-[#111111] tracking-wide uppercase mb-5">
+            Quick answers
+          </h2>
+          <div className="space-y-4">
+            {[
+              { q: "How long do deposits take?", a: "ACH transfers settle in 3–5 business days. Wire transfers and crypto are usually same-day." },
+              { q: "What are the fees?", a: "Deposits are free. Withdrawals have a flat fee based on the method — see the withdrawal screen for details." },
+              { q: "Which currencies are supported?", a: "USD, ARS, and USDT. More currencies coming soon." },
+            ].map((faq) => (
+              <div key={faq.q} className="border-b border-[#E5E5E5] pb-3 last:border-0 last:pb-0">
+                <p className="text-sm font-semibold text-[#111111]">{faq.q}</p>
+                <p className="text-sm text-[#666666] mt-1">{faq.a}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </div>
   )
 }

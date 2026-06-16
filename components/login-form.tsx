@@ -132,7 +132,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
           </form>
 
           <div className="relative hidden flex-col items-start justify-end bg-sidebar p-10 md:flex">
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-950 via-sidebar to-sidebar" />
+            <div className="absolute inset-0 bg-gradient-to-br from-foreground/20 via-primary/5 to-sidebar" />
             <div className="absolute inset-0 opacity-5 [background-image:radial-gradient(circle,_currentColor_1px,_transparent_1px)] [background-size:24px_24px]" />
             <div className="relative space-y-2">
               <p className="text-3xl font-bold">PayFlow</p>
