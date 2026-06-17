@@ -2,7 +2,14 @@ import axios, { type AxiosError, type AxiosInstance } from "axios"
 
 interface QueueItem {
   resolve: () => void
-  reject: () => void
+  reject: (error: unknown) => void
+}
+
+export class SessionExpiredError extends Error {
+  constructor() {
+    super("Session expired")
+    this.name = "SessionExpiredError"
+  }
 }
 
 function createApiClient(): AxiosInstance {
@@ -17,7 +24,7 @@ function createApiClient(): AxiosInstance {
 
   function processQueue(error: unknown) {
     failedQueue.forEach(({ resolve, reject }) => {
-      error ? reject() : resolve()
+      error ? reject(error) : resolve()
     })
     failedQueue = []
   }
@@ -38,10 +45,7 @@ function createApiClient(): AxiosInstance {
 
       if (isRefreshing) {
         return new Promise<void>((resolve, reject) => {
-          failedQueue.push({
-            resolve: () => resolve(),
-            reject,
-          })
+          failedQueue.push({ resolve, reject })
         }).then(() => client(originalRequest))
       }
 
@@ -53,18 +57,21 @@ function createApiClient(): AxiosInstance {
         processQueue(null)
         return client(originalRequest)
       } catch (refreshError) {
-        processQueue(refreshError)
-
         if (typeof window !== "undefined") {
+          processQueue(null)
+
           try {
             await client.post("/auth/logout")
           } catch (logoutError) {
             console.warn("[api] logout after refresh failure:", logoutError)
           }
+
           window.location.href = "/login?expired=1"
+          return new Promise<never>(() => {})
         }
 
-        return Promise.reject(refreshError)
+        processQueue(refreshError)
+        return Promise.reject(new SessionExpiredError())
       } finally {
         isRefreshing = false
       }
