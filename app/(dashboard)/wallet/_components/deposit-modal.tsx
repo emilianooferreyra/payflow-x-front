@@ -36,7 +36,7 @@ export function DepositModal({ open, onClose }: { open: boolean; onClose: () => 
     onSuccess() {
       qc.invalidateQueries({ queryKey: ["wallets"] })
       qc.invalidateQueries({ queryKey: ["transactions"] })
-      toast.success("Deposit successful")
+      toast.success("Depósito exitoso")
       reset()
       onClose()
     },
@@ -47,12 +47,12 @@ export function DepositModal({ open, onClose }: { open: boolean; onClose: () => 
     <Dialog open={open} onOpenChange={(v) => { if (!v) { reset(); onClose() } }}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Deposit funds</DialogTitle>
-          <DialogDescription>Add funds to one of your wallets.</DialogDescription>
+          <DialogTitle>Depositar fondos</DialogTitle>
+          <DialogDescription>Agregá fondos a una de tus billeteras.</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit((d) => mutate(d))} className="space-y-4">
           <div className="space-y-1.5">
-            <Label>Currency</Label>
+            <Label>Moneda</Label>
             <Select value={watch("currency")} onValueChange={(v) => setValue("currency", v as typeof CURRENCIES[number])}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
@@ -61,18 +61,18 @@ export function DepositModal({ open, onClose }: { open: boolean; onClose: () => 
             </Select>
           </div>
           <div className="space-y-1.5">
-            <Label>Amount</Label>
+            <Label>Monto</Label>
             <Input type="number" step="0.01" placeholder="0.00" {...field("amount")} />
             {errors.amount && <p className="text-destructive text-xs">{errors.amount.message}</p>}
           </div>
           <div className="space-y-1.5">
-            <Label>Description <span className="text-muted-foreground text-xs">(optional)</span></Label>
-            <Input placeholder="Bank transfer..." {...field("description")} />
+            <Label>Descripción <span className="text-muted-foreground text-xs">(opcional)</span></Label>
+            <Input placeholder="Transferencia bancaria..." {...field("description")} />
           </div>
           <div className="flex gap-2 pt-2">
-            <Button type="button" variant="outline" className="flex-1" onClick={() => { reset(); onClose() }}>Cancel</Button>
+            <Button type="button" variant="outline" className="flex-1" onClick={() => { reset(); onClose() }}>Cancelar</Button>
             <Button type="submit" className="flex-1" disabled={isPending}>
-              {isPending ? "Processing…" : "Deposit"}
+              {isPending ? "Procesando…" : "Depositar"}
             </Button>
           </div>
         </form>

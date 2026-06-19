@@ -10,30 +10,30 @@ import { formatCurrency } from "@/lib/utils"
 import { TransactionTimeline } from "./_components/timeline"
 
 const TYPE_LABELS: Record<string, string> = {
-  DEPOSIT: "Deposit",
-  WITHDRAWAL: "Withdrawal",
-  EXCHANGE: "Exchange",
-  INVESTMENT_BUY: "Investment",
-  INVESTMENT_SELL: "Sale",
-  YIELD: "Yield",
-  TRANSFER: "Transfer",
+  DEPOSIT: "Depósito",
+  WITHDRAWAL: "Retiro",
+  EXCHANGE: "Intercambio",
+  INVESTMENT_BUY: "Inversión",
+  INVESTMENT_SELL: "Venta",
+  YIELD: "Rendimiento",
+  TRANSFER: "Transferencia",
 }
 
 const TYPE_COLORS: Record<string, string> = {
-  DEPOSIT: "bg-[#7C3AED]/10 text-[#7C3AED]",
+  DEPOSIT: "bg-[#111111]/10 text-[#111111]",
   WITHDRAWAL: "bg-[#E5484D]/10 text-[#E5484D]",
-  EXCHANGE: "bg-[#7C3AED]/10 text-[#7C3AED]",
-  INVESTMENT_BUY: "bg-[#7C3AED]/10 text-[#7C3AED]",
+  EXCHANGE: "bg-[#111111]/10 text-[#111111]",
+  INVESTMENT_BUY: "bg-[#111111]/10 text-[#111111]",
   INVESTMENT_SELL: "bg-[#E5A500]/10 text-[#E5A500]",
   YIELD: "bg-[#22C55E]/10 text-[#22C55E]",
   TRANSFER: "bg-[#F5F5F5] text-[#666666]",
 }
 
 const STATUS_LABELS: Record<string, string> = {
-  COMPLETED: "Completed",
-  PENDING: "Pending",
-  FAILED: "Failed",
-  CANCELLED: "Cancelled",
+  COMPLETED: "Completado",
+  PENDING: "Pendiente",
+  FAILED: "Fallida",
+  CANCELLED: "Cancelada",
 }
 
 const TYPE_ICONS: Record<string, typeof RiArrowDownLine> = {
@@ -72,16 +72,16 @@ export default function TransactionsPage() {
         {/* ─── Page Header ─── */}
         <div className="mb-10">
           <div className="flex items-center gap-2 mb-3">
-            <span className="inline-flex size-2 rounded-full bg-[#7C3AED]" />
+            <span className="inline-flex size-2 rounded-full bg-[#111111]" />
             <span className="text-xs font-medium text-[#666666] tracking-wide uppercase">
-              {data ? `${data.meta.total} transactions` : "Activity history"}
+              {data ? `${data.meta.total} transacciones` : "Historial de actividad"}
             </span>
           </div>
           <h1 className="text-4xl font-bold tracking-tight text-[#111111] sm:text-5xl">
-            Transactions
+            Transacciones
           </h1>
           <p className="mt-3 max-w-lg text-lg text-[#666666] leading-relaxed">
-            Your complete account activity.
+            Toda la actividad de tu cuenta.
           </p>
         </div>
 
@@ -89,10 +89,10 @@ export default function TransactionsPage() {
         <div className="mb-6 flex flex-wrap gap-3">
           <Select value={currency || "all"} onValueChange={(v) => { setCurrency(v === "all" ? "" : v); resetPage() }}>
             <SelectTrigger className="w-36 border-[#E5E5E5] rounded-xl h-12 px-4 text-base bg-white">
-              <SelectValue placeholder="Currency" />
+              <SelectValue placeholder="Moneda" />
             </SelectTrigger>
             <SelectContent sideOffset={8}>
-              <SelectItem value="all" className="py-3">All currencies</SelectItem>
+                <SelectItem value="all" className="py-3">Todas las monedas</SelectItem>
               <SelectItem value="USD" className="py-3">USD</SelectItem>
               <SelectItem value="ARS" className="py-3">ARS</SelectItem>
               <SelectItem value="USDT" className="py-3">USDT</SelectItem>
@@ -101,10 +101,10 @@ export default function TransactionsPage() {
 
           <Select value={type || "all"} onValueChange={(v) => { setType(v === "all" ? "" : v); resetPage() }}>
             <SelectTrigger className="w-40 border-[#E5E5E5] rounded-xl h-12 px-4 text-base bg-white">
-              <SelectValue placeholder="Type" />
+              <SelectValue placeholder="Tipo" />
             </SelectTrigger>
             <SelectContent sideOffset={8}>
-              <SelectItem value="all" className="py-3">All types</SelectItem>
+                <SelectItem value="all" className="py-3">Todos los tipos</SelectItem>
               {Object.entries(TYPE_LABELS).map(([k, v]) => (
                 <SelectItem key={k} value={k} className="py-3">{v}</SelectItem>
               ))}
@@ -129,13 +129,13 @@ export default function TransactionsPage() {
             ))
           ) : data?.data.length === 0 ? (
             <div className="rounded-2xl border border-[#E5E5E5] bg-white p-10 text-center">
-              <p className="text-sm text-[#666666]">No transactions found.</p>
+              <p className="text-sm text-[#666666]">No se encontraron transacciones.</p>
             </div>
           ) : (
             data?.data.map((tx) => {
               const isDeposit = tx.type === "DEPOSIT" || tx.type === "YIELD"
               const sign = isDeposit ? "+" : "-"
-              const amountColor = isDeposit ? "text-[#7C3AED]" : "text-[#111111]"
+              const amountColor = isDeposit ? "text-[#111111]" : "text-[#111111]"
               const isExpanded = expandedId === tx.id
               const Icon = getTypeIcon(tx.type)
 
@@ -148,9 +148,9 @@ export default function TransactionsPage() {
                   >
                     {/* Icon */}
                     <div className={`flex size-10 shrink-0 items-center justify-center rounded-xl ${
-                      isDeposit ? "bg-[#7C3AED]/10" : "bg-[#E5484D]/10"
+                      isDeposit ? "bg-[#111111]/10" : "bg-[#E5484D]/10"
                     }`}>
-                      <Icon className={`size-4.5 ${isDeposit ? "text-[#7C3AED]" : "text-[#E5484D]"}`} />
+                      <Icon className={`size-4.5 ${isDeposit ? "text-[#111111]" : "text-[#E5484D]"}`} />
                     </div>
 
                     {/* Info */}
@@ -160,7 +160,7 @@ export default function TransactionsPage() {
                           {TYPE_LABELS[tx.type] ?? tx.type}
                         </span>
                         <span className="text-xs text-[#666666]">
-                          {new Date(tx.createdAt).toLocaleDateString("en-US", {
+                          {new Date(tx.createdAt).toLocaleDateString("es-AR", {
                             month: "short", day: "numeric", hour: "2-digit", minute: "2-digit",
                           })}
                         </span>
@@ -191,7 +191,7 @@ export default function TransactionsPage() {
                   {/* Expanded timeline */}
                   {isExpanded && (
                     <div className="border-t border-[#E5E5E5] px-5 py-5 bg-[#FAFAFA]">
-                      <p className="text-xs font-semibold text-[#666666] tracking-wide uppercase mb-4">Transaction timeline</p>
+                      <p className="text-xs font-semibold text-[#666666] tracking-wide uppercase mb-4">Línea de tiempo</p>
                       <TransactionTimeline type={tx.type} status={tx.status} />
                     </div>
                   )}
@@ -204,7 +204,7 @@ export default function TransactionsPage() {
         {/* ─── Pagination ─── */}
         {totalPages > 1 && (
           <div className="mt-6 flex items-center justify-between">
-            <p className="text-sm text-[#666666]">Page {page} of {totalPages}</p>
+            <p className="text-sm text-[#666666]">Página {page} de {totalPages}</p>
             <div className="flex gap-2">
               <button
                 type="button"
@@ -213,7 +213,7 @@ export default function TransactionsPage() {
                 className="inline-flex h-10 items-center gap-1.5 rounded-xl border border-[#E5E5E5] bg-white px-4 text-sm font-semibold text-[#111111] hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
               >
                 <RiArrowLeftLine className="size-4" />
-                Previous
+                Anterior
               </button>
               <button
                 type="button"
@@ -221,7 +221,7 @@ export default function TransactionsPage() {
                 onClick={() => setPage((p) => p + 1)}
                 className="inline-flex h-10 items-center gap-1.5 rounded-xl border border-[#E5E5E5] bg-white px-4 text-sm font-semibold text-[#111111] hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
               >
-                Next
+                Siguiente
                 <RiArrowRightLine className="size-4" />
               </button>
             </div>

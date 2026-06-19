@@ -16,8 +16,8 @@ import { Label } from "@/components/ui/label"
 const schema = z.object({
   code: z
     .string()
-    .length(6, "Code must be exactly 6 digits")
-    .regex(/^\d+$/, "Code must contain only digits"),
+    .length(6, "El código debe tener exactamente 6 dígitos")
+    .regex(/^\d+$/, "El código debe contener solo dígitos"),
 })
 
 type FormValues = z.infer<typeof schema>
@@ -48,20 +48,20 @@ export default function TwoFactorPage() {
               >
                 <div className="flex flex-col gap-6">
                   <div className="flex flex-col items-center gap-2 text-center">
-                    <h1 className="text-2xl font-bold">Two-factor authentication</h1>
+                    <h1 className="text-2xl font-bold">Autenticación de dos factores</h1>
                     <p className="text-balance text-sm text-muted-foreground">
-                      Enter the 6-digit code from your authenticator app
+                      Ingresá el código de 6 dígitos de tu app de autenticación
                     </p>
                   </div>
 
                   {mutation.isError && (
                     <p className="rounded-md bg-destructive/10 px-3 py-2 text-center text-sm text-destructive">
-                      {getErrorMessage(mutation.error, "Invalid code")}
+                      {getErrorMessage(mutation.error, "Código inválido")}
                     </p>
                   )}
 
                   <div className="grid gap-2">
-                    <Label htmlFor="code">Authentication code</Label>
+                    <Label htmlFor="code">Código de autenticación</Label>
                     <Input
                       id="code"
                       placeholder="123456"
@@ -78,13 +78,13 @@ export default function TwoFactorPage() {
                   </div>
 
                   <Button type="submit" className="w-full" disabled={mutation.isPending}>
-                    {mutation.isPending ? "Verifying…" : "Verify"}
+                    {mutation.isPending ? "Verificando…" : "Verificar"}
                   </Button>
 
                   <p className="text-center text-sm text-muted-foreground">
-                    Having trouble?{" "}
+                    ¿Problemas?{" "}
                     <Link href="/login" className="text-foreground underline underline-offset-4">
-                      Back to sign in
+                      Volver a iniciar sesión
                     </Link>
                   </p>
                 </div>
@@ -96,7 +96,7 @@ export default function TwoFactorPage() {
                 <div className="relative space-y-2">
                   <p className="text-3xl font-bold">PayFlow</p>
                   <p className="max-w-xs text-sm text-muted-foreground">
-                    Open Google Authenticator, Microsoft Authenticator, or any compatible app to get your code.
+                    Abrí Google Authenticator, Microsoft Authenticator o cualquier app compatible para obtener tu código.
                   </p>
                 </div>
               </div>
@@ -105,7 +105,7 @@ export default function TwoFactorPage() {
 
           <p className="text-muted-foreground px-6 text-center text-xs">
             <Link href="/login" className="underline underline-offset-4 hover:text-primary">
-              ← Back to sign in
+              ← Volver a iniciar sesión
             </Link>
           </p>
         </div>

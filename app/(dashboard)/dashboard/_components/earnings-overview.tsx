@@ -16,17 +16,17 @@ export function EarningsOverview({ apy, totalYield, thisMonthYield, isLoading }:
   const items = [
     {
       icon: <span className="text-xl font-bold text-primary leading-none">%</span>,
-      label: "Annual rate",
+      label: "Tasa anual",
       value: `${apy}%`,
     },
     {
       icon: <span className="text-xl font-bold text-primary leading-none">$</span>,
-      label: "Total earned",
+      label: "Ganado total",
       value: formatCurrency(totalYield),
     },
     {
       icon: <RiCalendar2Line className="size-5 text-primary" />,
-      label: "Earned this month",
+      label: "Ganado este mes",
       value: formatCurrency(thisMonthYield),
     },
   ]

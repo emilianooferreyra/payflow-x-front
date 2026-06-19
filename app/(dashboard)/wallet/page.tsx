@@ -30,21 +30,21 @@ export default function WalletPage() {
         <div className="flex flex-1 flex-col gap-6 p-4 lg:p-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-semibold">Wallet</h1>
-              <p className="text-muted-foreground text-sm">Manage your multi-currency balances</p>
+              <h1 className="text-2xl font-semibold">Billetera</h1>
+              <p className="text-muted-foreground text-sm">Gestioná tus saldos multi-moneda</p>
             </div>
             <div className="flex gap-2">
               <Button variant="outline" size="sm" onClick={() => setModal("deposit")}>
                 <RiArrowDownLine className="mr-1.5 size-4" />
-                Deposit
+                Depositar
               </Button>
               <Button variant="outline" size="sm" onClick={() => setModal("withdraw")}>
                 <RiArrowUpLine className="mr-1.5 size-4" />
-                Withdraw
+                Retirar
               </Button>
               <Button size="sm" onClick={() => setModal("exchange")}>
                 <RiExchangeLine className="mr-1.5 size-4" />
-                Exchange
+                Intercambiar
               </Button>
             </div>
           </div>
@@ -70,8 +70,8 @@ export default function WalletPage() {
                     </CardHeader>
                     <CardContent className="pt-0">
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm" className="flex-1" onClick={() => setModal("deposit")}>Deposit</Button>
-                        <Button variant="outline" size="sm" className="flex-1" onClick={() => setModal("withdraw")}>Withdraw</Button>
+                        <Button variant="outline" size="sm" className="flex-1" onClick={() => setModal("deposit")}>Depositar</Button>
+                        <Button variant="outline" size="sm" className="flex-1" onClick={() => setModal("withdraw")}>Retirar</Button>
                       </div>
                     </CardContent>
                   </Card>

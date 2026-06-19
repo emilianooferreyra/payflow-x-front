@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 
-export const metadata: Metadata = { title: "Two-factor authentication" }
+export const metadata: Metadata = { title: "Autenticación de dos factores" }
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return children

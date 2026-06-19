@@ -16,12 +16,12 @@ export function TransactionTable({ transactions, isLoading }: TransactionTablePr
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-semibold text-foreground">Recent transactions</h2>
+        <h2 className="text-sm font-semibold text-foreground">Transacciones recientes</h2>
         <Link
           href="/transactions"
           className="text-xs font-semibold text-muted-foreground hover:text-foreground flex items-center gap-0.5 transition-colors"
         >
-          View all
+          Ver todo
           <RiArrowRightSLine className="size-3" />
         </Link>
       </div>
@@ -43,7 +43,7 @@ export function TransactionTable({ transactions, isLoading }: TransactionTablePr
         <Card className="border">
           <CardContent className="flex flex-col items-center py-10">
             <RiArrowDownBoxLine className="size-8 text-muted mb-2" />
-            <p className="text-sm text-muted-foreground">No transactions yet.</p>
+            <p className="text-sm text-muted-foreground">Sin transacciones aún.</p>
           </CardContent>
         </Card>
       ) : (
@@ -56,7 +56,7 @@ export function TransactionTable({ transactions, isLoading }: TransactionTablePr
             const color = isDeposit ? "text-positive" : isWithdraw ? "text-destructive" : "text-primary"
             const bgColor = isDeposit ? "bg-positive/10" : isWithdraw ? "bg-destructive/10" : "bg-primary/10"
             const Icon = isDeposit ? RiArrowDownBoxLine : isWithdraw ? RiArrowUpBoxLine : RiExchange2Line
-            const label = isDeposit ? "Deposit" : isWithdraw ? "Withdrawal" : isExchange ? "Exchange" : tx.type
+            const label = isDeposit ? "Depósito" : isWithdraw ? "Retiro" : isExchange ? "Intercambio" : tx.type
 
             return (
               <div key={tx.id} className="flex items-center gap-3 px-4 py-3.5">
@@ -66,7 +66,7 @@ export function TransactionTable({ transactions, isLoading }: TransactionTablePr
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-foreground truncate">{tx.description || label}</p>
                   <p className="text-xs text-muted-foreground">
-                    {new Date(tx.createdAt).toLocaleDateString("en-US", {
+                    {new Date(tx.createdAt).toLocaleDateString("es-AR", {
                       month: "short",
                       day: "numeric",
                     })}

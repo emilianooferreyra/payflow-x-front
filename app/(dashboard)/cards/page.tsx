@@ -17,13 +17,13 @@ function VirtualCard({ card }: { card: CardType }) {
 
   const { mutate: freeze, isPending: freezing } = useMutation({
     mutationFn: () => freezeCard(card.id),
-    onSuccess() { qc.invalidateQueries({ queryKey: ["cards"] }); toast.success("Card frozen") },
+    onSuccess() { qc.invalidateQueries({ queryKey: ["cards"] });       toast.success("Tarjeta bloqueada") },
     onError(err) { toast.error(getErrorMessage(err)) },
   })
 
   const { mutate: unfreeze, isPending: unfreezing } = useMutation({
     mutationFn: () => unfreezeCard(card.id),
-    onSuccess() { qc.invalidateQueries({ queryKey: ["cards"] }); toast.success("Card unfrozen") },
+    onSuccess() { qc.invalidateQueries({ queryKey: ["cards"] }); toast.success("Tarjeta desbloqueada") },
     onError(err) { toast.error(getErrorMessage(err)) },
   })
 
@@ -36,7 +36,7 @@ function VirtualCard({ card }: { card: CardType }) {
           <div className="absolute inset-0 flex items-center justify-center bg-black/30 backdrop-blur-[2px]">
             <div className="text-center text-white">
               <RiLockLine className="mx-auto size-10 mb-2" />
-              <p className="text-sm font-medium">Card frozen</p>
+              <p className="text-sm font-medium">Tarjeta bloqueada</p>
             </div>
           </div>
         )}
@@ -46,7 +46,7 @@ function VirtualCard({ card }: { card: CardType }) {
             <div className="flex items-center gap-2">
               {card.network && <span className="text-white/80 text-sm">{card.network}</span>}
               <Badge variant={card.isFrozen ? "secondary" : "outline"} className={card.isFrozen ? "" : "border-white/30 text-white"}>
-                {card.isFrozen ? "Frozen" : card.isActive ? "Active" : "Inactive"}
+                {card.isFrozen ? "Bloqueada" : card.isActive ? "Activa" : "Inactiva"}
               </Badge>
             </div>
           </div>
@@ -54,9 +54,9 @@ function VirtualCard({ card }: { card: CardType }) {
             <p className="font-mono text-xl tracking-[0.25em] text-white">{card.maskedNumber}</p>
             <div className="mt-3 flex items-end justify-between">
               <div>
-                <p className="text-white/60 text-xs uppercase tracking-wide">Expires</p>
+                <p className="text-white/60 text-xs uppercase tracking-wide">Vence</p>
                 <p className="text-white text-sm font-medium">
-                  {new Date(card.expiresAt).toLocaleDateString("en-US", { month: "2-digit", year: "2-digit" })}
+                  {new Date(card.expiresAt).toLocaleDateString("es-AR", { month: "2-digit", year: "2-digit" })}
                 </p>
               </div>
               <Badge variant="outline" className="border-white/30 text-white text-xs">{card.type}</Badge>
@@ -68,13 +68,13 @@ function VirtualCard({ card }: { card: CardType }) {
       <CardContent className="p-4 space-y-3">
         {card.spendingLimit && (
           <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Spending limit</span>
+            <span className="text-muted-foreground">Límite de gasto</span>
             <span className="font-medium">{formatCurrency(card.spendingLimit)}</span>
           </div>
         )}
         {card.issuer && (
           <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Issuer</span>
+            <span className="text-muted-foreground">Emisor</span>
             <span className="font-medium">{card.issuer}</span>
           </div>
         )}
@@ -85,9 +85,9 @@ function VirtualCard({ card }: { card: CardType }) {
           onClick={() => card.isFrozen ? unfreeze() : freeze()}
         >
           {card.isFrozen ? (
-            <><RiLockUnlockLine className="mr-2 size-4" />{unfreezing ? "Unfreezing…" : "Unfreeze card"}</>
+            <><RiLockUnlockLine className="mr-2 size-4" />{unfreezing ? "Desbloqueando…" : "Desbloquear tarjeta"}</>
           ) : (
-            <><RiLockLine className="mr-2 size-4" />{freezing ? "Freezing…" : "Freeze card"}</>
+            <><RiLockLine className="mr-2 size-4" />{freezing ? "Bloqueando…" : "Bloquear tarjeta"}</>
           )}
         </Button>
       </CardContent>
@@ -107,8 +107,8 @@ export default function CardsPage() {
 
         <div className="flex flex-1 flex-col gap-6 p-4 lg:p-6">
           <div>
-            <h1 className="text-2xl font-semibold">Cards</h1>
-            <p className="text-muted-foreground text-sm">Your virtual and physical cards</p>
+            <h1 className="text-2xl font-semibold">Tarjetas</h1>
+            <p className="text-muted-foreground text-sm">Tus tarjetas virtuales y físicas</p>
           </div>
 
           {isLoading ? (
@@ -126,8 +126,8 @@ export default function CardsPage() {
           ) : cards?.length === 0 ? (
             <Card>
               <CardHeader>
-                <CardTitle className="text-base">No cards yet</CardTitle>
-                <CardDescription>You don&apos;t have any cards associated with your account.</CardDescription>
+                <CardTitle className="text-base">Sin tarjetas aún</CardTitle>
+                <CardDescription>No tenés tarjetas asociadas a tu cuenta.</CardDescription>
               </CardHeader>
             </Card>
           ) : (

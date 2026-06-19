@@ -64,7 +64,7 @@ export function SectionCards() {
     <div className="grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-linear-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4 dark:*:data-[slot=card]:bg-card">
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>USD Balance</CardDescription>
+          <CardDescription>Saldo USD</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
             {usd ? fmt(usd.balance, "USD") : "—"}
           </CardTitle>
@@ -73,13 +73,13 @@ export function SectionCards() {
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="text-muted-foreground">US Dollar wallet</div>
+          <div className="text-muted-foreground">Billetera en dólares</div>
         </CardFooter>
       </Card>
 
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>ARS Balance</CardDescription>
+          <CardDescription>Saldo ARS</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
             {ars ? fmt(ars.balance, "ARS") : "—"}
           </CardTitle>
@@ -88,13 +88,13 @@ export function SectionCards() {
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="text-muted-foreground">Argentine Peso wallet</div>
+          <div className="text-muted-foreground">Billetera en pesos argentinos</div>
         </CardFooter>
       </Card>
 
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>USDT Balance</CardDescription>
+          <CardDescription>Saldo USDT</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
             {usdt ? fmt(usdt.balance, "USDT") : "—"}
           </CardTitle>
@@ -103,13 +103,13 @@ export function SectionCards() {
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="text-muted-foreground">Tether stablecoin wallet</div>
+          <div className="text-muted-foreground">Billetera en Tether (USDT)</div>
         </CardFooter>
       </Card>
 
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Portfolio P&L</CardDescription>
+          <CardDescription>Cartera G&P</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
             {pnl ? fmt(pnl.totalValue, "USD") : "—"}
           </CardTitle>
@@ -122,10 +122,10 @@ export function SectionCards() {
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className={`font-medium ${pnlPositive ? "text-positive" : "text-destructive"}`}>
-            {pnl ? `${pnlPositive ? "+" : ""}${fmt(pnl.totalPnL, "USD")} total P&L` : "—"}
+            {pnl ? `${pnlPositive ? "+" : ""}${fmt(pnl.totalPnL, "USD")} G&P total` : "—"}
           </div>
           <div className="text-muted-foreground">
-            Cost basis {pnl ? fmt(pnl.totalCost, "USD") : "—"}
+            Costo de base {pnl ? fmt(pnl.totalCost, "USD") : "—"}
           </div>
         </CardFooter>
       </Card>

@@ -45,7 +45,7 @@ export function SiteHeader() {
     },
   })
 
-  const displayName = [user?.name, user?.lastName].filter(Boolean).join(" ") || user?.email || "User"
+  const displayName = [user?.name, user?.lastName].filter(Boolean).join(" ") || user?.email || "Usuario"
   const initials = getInitials(user?.name, user?.lastName, user?.email)
 
   return (
@@ -53,7 +53,7 @@ export function SiteHeader() {
       {/* Reward badge */}
       <Badge
         variant="secondary"
-        className="hidden sm:inline-flex items-center gap-2 rounded-full pl-2 pr-3.5 py-1.5 text-sm font-semibold border-0 bg-[#7C3AED]/10 text-[#7C3AED] shadow-sm"
+        className="hidden sm:inline-flex items-center gap-2 rounded-full pl-2 pr-3.5 py-1.5 text-sm font-semibold border-0 bg-[#111111]/10 text-[#111111] shadow-sm"
       >
         <RiGiftFill className="size-5" />
         <span>Referí y ganá</span>
@@ -65,7 +65,7 @@ export function SiteHeader() {
           <button className="flex items-center gap-2.5 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring">
             <Avatar className="size-9 ring-2 ring-[#E5E5E5]">
               <AvatarImage src={user?.avatar} alt={displayName} />
-              <AvatarFallback className="bg-[#7C3AED]/10 text-[#7C3AED] text-xs font-semibold">
+              <AvatarFallback className="bg-[#111111]/10 text-[#111111] text-xs font-semibold">
                 {initials}
               </AvatarFallback>
             </Avatar>
@@ -89,11 +89,11 @@ export function SiteHeader() {
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => router.push("/perfil")} className="gap-2">
             <RiUserLine className="size-4" />
-            Profile
+            Perfil
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => router.push("/seguridad")} className="gap-2">
             <RiSettings3Line className="size-4" />
-            Settings
+            Configuración
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
@@ -102,7 +102,7 @@ export function SiteHeader() {
             className="gap-2 text-destructive focus:text-destructive"
           >
             <RiLogoutBoxLine className="size-4" />
-            {isPending ? "Signing out…" : "Sign out"}
+            {isPending ? "Cerrando sesión…" : "Cerrar sesión"}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

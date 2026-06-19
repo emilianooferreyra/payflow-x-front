@@ -51,7 +51,7 @@ export function ExchangeModal({ open, onClose }: { open: boolean; onClose: () =>
     onSuccess() {
       qc.invalidateQueries({ queryKey: ["wallets"] })
       qc.invalidateQueries({ queryKey: ["transactions"] })
-      toast.success("Exchange successful")
+      toast.success("Intercambio exitoso")
       reset()
       onClose()
     },
@@ -62,13 +62,13 @@ export function ExchangeModal({ open, onClose }: { open: boolean; onClose: () =>
     <Dialog open={open} onOpenChange={(v) => { if (!v) { reset(); onClose() } }}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Exchange currency</DialogTitle>
-          <DialogDescription>Convert between your wallets at the current rate.</DialogDescription>
+          <DialogTitle>Intercambiar moneda</DialogTitle>
+          <DialogDescription>Convertí entre tus billeteras al tipo de cambio actual.</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit((d) => mutate(d))} className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label>From</Label>
+              <Label>De</Label>
               <Select value={fromCurrency} onValueChange={(v) => setValue("fromCurrency", v as typeof CURRENCIES[number])}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
@@ -77,7 +77,7 @@ export function ExchangeModal({ open, onClose }: { open: boolean; onClose: () =>
               </Select>
             </div>
             <div className="space-y-1.5">
-              <Label>To</Label>
+              <Label>A</Label>
               <Select value={toCurrency} onValueChange={(v) => setValue("toCurrency", v as typeof CURRENCIES[number])}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
@@ -87,28 +87,28 @@ export function ExchangeModal({ open, onClose }: { open: boolean; onClose: () =>
             </div>
           </div>
           <div className="space-y-1.5">
-            <Label>Amount ({fromCurrency})</Label>
+            <Label>Monto ({fromCurrency})</Label>
             <Input type="number" step="0.01" placeholder="0.00" {...field("amount")} />
             {errors.amount && <p className="text-destructive text-xs">{errors.amount.message}</p>}
           </div>
           {rate && (
             <div className="rounded-lg bg-muted px-4 py-3 text-sm space-y-1">
               <div className="flex justify-between text-muted-foreground">
-                <span>Rate</span>
+                <span>Tipo de cambio</span>
                 <span>1 {fromCurrency} = {Number(rate.rate).toFixed(4)} {toCurrency}</span>
               </div>
               {preview && (
                 <div className="flex justify-between font-medium">
-                  <span>You receive</span>
+                  <span>Recibís</span>
                   <span>{formatCurrency(preview, toCurrency)}</span>
                 </div>
               )}
             </div>
           )}
           <div className="flex gap-2 pt-2">
-            <Button type="button" variant="outline" className="flex-1" onClick={() => { reset(); onClose() }}>Cancel</Button>
+            <Button type="button" variant="outline" className="flex-1" onClick={() => { reset(); onClose() }}>Cancelar</Button>
             <Button type="submit" className="flex-1" disabled={isPending}>
-              {isPending ? "Processing…" : "Exchange"}
+              {isPending ? "Procesando…" : "Intercambiar"}
             </Button>
           </div>
         </form>

@@ -9,23 +9,23 @@ function getStages(type: string, status: string): Stage[] {
   if (type === "DEPOSIT" || type === "YIELD") {
     const done = status === "COMPLETED"
     return [
-      { label: "Received", status: done ? "completed" : "current" },
-      { label: "Settled", status: done ? "completed" : "pending" },
-      { label: "Available", status: done ? "completed" : "pending" },
+      { label: "Recibido", status: done ? "completed" : "current" },
+      { label: "Liquidado", status: done ? "completed" : "pending" },
+      { label: "Disponible", status: done ? "completed" : "pending" },
     ]
   }
   if (type === "WITHDRAWAL") {
     const done = status === "COMPLETED"
     return [
-      { label: "Created", status: "completed" },
-      { label: "Processing", status: done ? "completed" : "current" },
-      { label: "Completed", status: done ? "completed" : "pending" },
+      { label: "Creado", status: "completed" },
+      { label: "Procesando", status: done ? "completed" : "current" },
+      { label: "Completado", status: done ? "completed" : "pending" },
     ]
   }
   return [
-    { label: "Initiated", status: "completed" },
-    { label: "Processing", status: status === "COMPLETED" ? "completed" : "current" },
-    { label: "Completed", status: status === "COMPLETED" ? "completed" : "pending" },
+    { label: "Iniciado", status: "completed" },
+    { label: "Procesando", status: status === "COMPLETED" ? "completed" : "current" },
+    { label: "Completado", status: status === "COMPLETED" ? "completed" : "pending" },
   ]
 }
 
@@ -48,22 +48,22 @@ export function TransactionTimeline({ type, status }: TransactionTimelineProps) 
               <div
                 className={`flex size-6 shrink-0 items-center justify-center rounded-full border-2 transition-colors ${
                   stage.status === "completed"
-                    ? "border-[#7C3AED] bg-[#7C3AED]"
+                    ? "border-[#111111] bg-[#111111]"
                     : stage.status === "current"
-                    ? "border-[#7C3AED] bg-white"
+                    ? "border-[#111111] bg-white"
                     : "border-[#E5E5E5] bg-white"
                 }`}
               >
                 {stage.status === "completed" ? (
                   <RiCheckLine className="size-3 text-white" />
                 ) : stage.status === "current" ? (
-                  <span className="size-2 rounded-full bg-[#7C3AED]" />
+                  <span className="size-2 rounded-full bg-[#111111]" />
                 ) : null}
               </div>
               {!isLast && (
                 <div
                   className={`w-0.5 h-6 ${
-                    stage.status === "completed" ? "bg-[#7C3AED]" : "bg-[#E5E5E5]"
+                    stage.status === "completed" ? "bg-[#111111]" : "bg-[#E5E5E5]"
                   }`}
                 />
               )}
@@ -73,7 +73,7 @@ export function TransactionTimeline({ type, status }: TransactionTimelineProps) 
               <p
                 className={`text-sm font-medium ${
                   stage.status === "completed"
-                    ? "text-[#7C3AED]"
+                    ? "text-[#111111]"
                     : stage.status === "current"
                     ? "text-[#111111]"
                     : "text-[#999999]"

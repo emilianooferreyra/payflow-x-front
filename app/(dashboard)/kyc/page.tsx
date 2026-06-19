@@ -9,8 +9,6 @@ import {
   RiTimeLine,
   RiCloseCircleLine,
 } from "@remixicon/react"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { getMe } from "@/lib/api/auth"
@@ -54,19 +52,17 @@ function PendingView({ documentType, submittedAt }: KycCardProps) {
   })
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-base">
-          <RiTimeLine className="size-4 text-amber-500" />
-          Verificación de identidad
-        </CardTitle>
-        <CardDescription>
-          Para operar en PayFlow necesitás verificar tu identidad. Seleccioná el tipo de documento y envialo para revisión.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
+    <div className="rounded-2xl border-2 border-[#E5E5E5] bg-white p-6">
+      <div className="flex items-center gap-2 mb-5">
+        <RiTimeLine className="size-5 text-[#F59E0B]" />
+        <h3 className="text-base font-semibold text-[#111111]">Verificación de identidad</h3>
+      </div>
+      <p className="text-sm text-[#666666] mb-5">
+        Para operar en PayFlow necesitás verificar tu identidad. Seleccioná el tipo de documento y envialo para revisión.
+      </p>
+      <div className="space-y-4">
         <Select value={selected} onValueChange={setSelected}>
-          <SelectTrigger>
+          <SelectTrigger className="h-14 border-[#E5E5E5] rounded-xl px-4 text-base">
             <SelectValue placeholder="Seleccioná un tipo de documento" />
           </SelectTrigger>
           <SelectContent>
@@ -78,15 +74,15 @@ function PendingView({ documentType, submittedAt }: KycCardProps) {
           </SelectContent>
         </Select>
 
-        <Button
+        <button
           onClick={() => handleSubmit()}
           disabled={!selected || isPending}
-          className="w-full gap-1.5"
+          className="h-12 gap-2 rounded-xl bg-white border-2 border-[#111111] px-6 text-base font-semibold text-[#111111] shadow-sm hover:bg-[#F5F5F5] active:bg-[#E5E5E5] transition-all disabled:opacity-50 disabled:cursor-not-allowed w-full"
         >
           {isPending ? "Enviando..." : "Enviar verificación"}
-        </Button>
-      </CardContent>
-    </Card>
+        </button>
+      </div>
+    </div>
   )
 }
 
@@ -119,101 +115,95 @@ function InReviewView({ documentType, submittedAt }: KycCardProps) {
   }, [user?.kyc?.status])
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-base">
-          <RiTimeLine className="size-4 text-amber-500" />
-          Verificación en curso
-        </CardTitle>
-        <CardDescription>
-          Estamos revisando tu documentación. Te notificaremos cuando el proceso esté completo.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <div className="flex items-center gap-3 rounded-lg bg-muted p-3">
-          <div className="flex size-10 items-center justify-center rounded-full bg-amber-500/10">
-            <RiTimeLine className="size-5 text-amber-500" />
+    <div className="rounded-2xl border-2 border-[#E5E5E5] bg-white p-6">
+      <div className="flex items-center gap-2 mb-5">
+        <RiTimeLine className="size-5 text-[#F59E0B]" />
+        <h3 className="text-base font-semibold text-[#111111]">Verificación en curso</h3>
+      </div>
+      <p className="text-sm text-[#666666] mb-5">
+        Estamos revisando tu documentación. Te notificaremos cuando el proceso esté completo.
+      </p>
+      <div className="space-y-3">
+        <div className="flex items-center gap-3 rounded-lg bg-[#F5F5F5] p-3">
+          <div className="flex size-10 items-center justify-center rounded-full bg-[#F59E0B]/10">
+            <RiTimeLine className="size-5 text-[#F59E0B]" />
           </div>
           <div className="text-sm">
             <p className="font-medium">En revisión</p>
-            {documentType && <p className="text-muted-foreground text-xs">Documento: {documentType}</p>}
+            {documentType && <p className="text-[#666666] text-xs">Documento: {documentType}</p>}
             {submittedAt && (
-              <p className="text-muted-foreground text-xs">
+              <p className="text-[#666666] text-xs">
                 Enviado: {new Date(submittedAt).toLocaleDateString("es-AR")}
               </p>
             )}
           </div>
         </div>
-        <p className="text-xs text-muted-foreground text-center animate-pulse">
+        <p className="text-xs text-[#666666] text-center animate-pulse">
           Verificando datos... Esto suele tomar unos segundos.
         </p>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }
 
 function ApprovedView({ documentType, submittedAt, reviewedAt }: KycCardProps) {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-base">
-          <RiCheckboxCircleLine className="size-4 text-emerald-500" />
-          Identidad verificada
-        </CardTitle>
-        <CardDescription>
-          Tu identidad fue verificada correctamente. Ya podés usar todas las funcionalidades de PayFlow.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <div className="flex items-center gap-3 rounded-lg bg-muted p-3">
-          <div className="flex size-10 items-center justify-center rounded-full bg-emerald-500/10">
-            <RiCheckboxCircleLine className="size-5 text-emerald-500" />
+    <div className="rounded-2xl border-2 border-[#E5E5E5] bg-white p-6">
+      <div className="flex items-center gap-2 mb-5">
+        <RiCheckboxCircleLine className="size-5 text-[#059669]" />
+        <h3 className="text-base font-semibold text-[#111111]">Identidad verificada</h3>
+      </div>
+      <p className="text-sm text-[#666666] mb-5">
+        Tu identidad fue verificada correctamente. Ya podés usar todas las funcionalidades de PayFlow.
+      </p>
+      <div className="space-y-3">
+        <div className="flex items-center gap-3 rounded-lg bg-[#F5F5F5] p-3">
+          <div className="flex size-10 items-center justify-center rounded-full bg-[#059669]/10">
+            <RiCheckboxCircleLine className="size-5 text-[#059669]" />
           </div>
           <div className="text-sm">
             <p className="font-medium">Verificación completada</p>
-            {documentType && <p className="text-muted-foreground text-xs">Documento: {documentType}</p>}
+            {documentType && <p className="text-[#666666] text-xs">Documento: {documentType}</p>}
             {submittedAt && (
-              <p className="text-muted-foreground text-xs">
+              <p className="text-[#666666] text-xs">
                 Enviado: {new Date(submittedAt).toLocaleDateString("es-AR")}
               </p>
             )}
             {reviewedAt && (
-              <p className="text-muted-foreground text-xs">
+              <p className="text-[#666666] text-xs">
                 Revisado: {new Date(reviewedAt).toLocaleDateString("es-AR")}
               </p>
             )}
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }
 
 function RejectedView(props: KycCardProps) {
   return (
     <div className="space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <RiCloseCircleLine className="size-4 text-destructive" />
-            Verificación rechazada
-          </CardTitle>
-          <CardDescription>
-            Tu verificación no pudo ser completada. Por favor enviá la documentación nuevamente.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="flex items-center gap-3 rounded-lg bg-destructive/10 p-3">
-            <div className="flex size-10 items-center justify-center rounded-full bg-destructive/10">
-              <RiCloseCircleLine className="size-5 text-destructive" />
+      <div className="rounded-2xl border-2 border-[#E5E5E5] bg-white p-6">
+        <div className="flex items-center gap-2 mb-5">
+          <RiCloseCircleLine className="size-5 text-[#E5484D]" />
+          <h3 className="text-base font-semibold text-[#111111]">Verificación rechazada</h3>
+        </div>
+        <p className="text-sm text-[#666666] mb-5">
+          Tu verificación no pudo ser completada. Por favor enviá la documentación nuevamente.
+        </p>
+        <div className="space-y-3">
+          <div className="flex items-center gap-3 rounded-lg bg-[#E5484D]/10 p-3">
+            <div className="flex size-10 items-center justify-center rounded-full bg-[#E5484D]/10">
+              <RiCloseCircleLine className="size-5 text-[#E5484D]" />
             </div>
             <div className="text-sm">
               <p className="font-medium">Documentación rechazada</p>
-              <p className="text-muted-foreground text-xs">Corregí los datos e intentá de nuevo</p>
+              <p className="text-[#666666] text-xs">Corregí los datos e intentá de nuevo</p>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
       <PendingView {...props} />
     </div>
   )
@@ -221,20 +211,22 @@ function RejectedView(props: KycCardProps) {
 
 function KycSkeleton() {
   return (
-    <main className="flex flex-1 flex-col">
-      <div className="flex flex-1 flex-col gap-6 p-4 lg:p-6">
-        <div className="flex items-center gap-3">
-          <div className="flex size-9 items-center justify-center rounded-xl bg-muted animate-pulse" />
-          <div>
-            <div className="h-5 w-48 bg-muted rounded animate-pulse" />
-            <div className="h-4 w-64 bg-muted rounded mt-1 animate-pulse" />
+    <main className="flex-1 bg-white">
+      <div className="mx-auto max-w-3xl px-6 py-10 lg:px-8 lg:py-14">
+        <div className="mb-12">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="inline-flex size-2 rounded-full bg-[#F5F5F5] animate-pulse" />
+            <span className="h-3 w-24 bg-[#F5F5F5] rounded animate-pulse" />
           </div>
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-64 bg-[#F5F5F5] rounded animate-pulse" />
+            <div className="h-6 w-28 bg-[#F5F5F5] rounded animate-pulse" />
+          </div>
+          <div className="mt-3 h-5 w-80 bg-[#F5F5F5] rounded animate-pulse" />
         </div>
-        <Card>
-          <CardContent className="p-6">
-            <div className="h-40 bg-muted rounded animate-pulse" />
-          </CardContent>
-        </Card>
+        <div className="rounded-2xl border-2 border-[#E5E5E5] bg-white p-6">
+          <div className="h-40 bg-[#F5F5F5] rounded animate-pulse" />
+        </div>
       </div>
     </main>
   )
@@ -262,23 +254,28 @@ export default function KycPage() {
   }
 
   return (
-    <main className="flex flex-1 flex-col">
-      <div className="flex flex-1 flex-col gap-6 p-4 lg:p-6">
-        <div className="flex items-center gap-3">
-          <div className="flex size-9 items-center justify-center rounded-xl bg-primary/10">
-            <RiShieldLine className="size-5 text-primary" />
+    <main className="flex-1 bg-white">
+      <div className="mx-auto max-w-3xl px-6 py-10 lg:px-8 lg:py-14">
+        <div className="mb-12">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="inline-flex size-2 rounded-full bg-[#111111]" />
+            <span className="text-xs font-medium text-[#666666] tracking-wide uppercase">
+              VERIFICACIÓN
+            </span>
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl font-semibold">Verificación de identidad</h1>
-              <Badge variant={badge.variant}>{badge.label}</Badge>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              {status === "APPROVED"
-                ? "Tu identidad está verificada"
-                : "Completá tu verificación para operar en PayFlow"}
-            </p>
+          <div className="flex items-center gap-3">
+            <h1 className="text-4xl font-bold tracking-tight text-[#111111] sm:text-5xl">
+              Verificación de identidad
+            </h1>
+            <span className="inline-flex items-center rounded-full bg-[#F5F5F5] px-2.5 py-0.5 text-xs font-medium text-[#666666]">
+              {badge.label}
+            </span>
           </div>
+          <p className="mt-3 max-w-lg text-lg text-[#666666] leading-relaxed">
+            {status === "APPROVED"
+              ? "Tu identidad está verificada"
+              : "Completá tu verificación para operar en PayFlow"}
+          </p>
         </div>
 
         {status === "PENDING" && <PendingView {...pageProps} />}

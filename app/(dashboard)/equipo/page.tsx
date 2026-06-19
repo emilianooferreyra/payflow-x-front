@@ -51,12 +51,12 @@ function MemberRow({ member }: { member: TeamMember }) {
       </div>
       <div className="flex items-center gap-4">
         <p className="text-xs text-[#666666] hidden sm:block">
-          Active {new Date(member.lastActive).toLocaleDateString("es-AR", { day: "numeric", month: "short" })}
+          Activo {new Date(member.lastActive).toLocaleDateString("es-AR", { day: "numeric", month: "short" })}
         </p>
         <RoleBadge role={member.role} />
         {member.role !== "owner" && (
           <button className="hidden sm:inline-flex text-xs font-semibold text-[#666666] hover:text-[#111111] transition-colors h-7 px-2">
-            Edit
+            Editar
           </button>
         )}
       </div>
@@ -98,27 +98,27 @@ export default function EquipoPage() {
         {/* ─── Page Header ─── */}
         <div className="mb-12">
           <div className="flex items-center gap-2 mb-3">
-            <span className="inline-flex size-2 rounded-full bg-[#7C3AED]" />
+            <span className="inline-flex size-2 rounded-full bg-[#111111]" />
             <span className="text-xs font-medium text-[#666666] tracking-wide">
-              {members.length} members
+              {members.length} miembros
             </span>
           </div>
           <div className="flex items-start justify-between">
             <div>
               <h1 className="text-4xl font-bold tracking-tight text-[#111111] sm:text-5xl">
-                Team
+                Equipo
               </h1>
               <p className="mt-3 max-w-lg text-lg text-[#666666] leading-relaxed">
-                Manage your team members and their roles.
+                Gestioná los miembros de tu equipo y sus roles.
               </p>
             </div>
             <button
               type="button"
               onClick={() => setInviteOpen(true)}
-              className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#7C3AED] px-5 text-sm font-semibold text-[#111111] shadow-sm hover:bg-[#6D28D9] active:bg-[#5B21B6] transition-all shrink-0"
+              className="inline-flex h-11 items-center gap-2 rounded-xl bg-white border-2 border-[#111111] px-5 text-sm font-semibold text-[#111111] shadow-sm hover:bg-[#F5F5F5] active:bg-[#E5E5E5] transition-all shrink-0"
             >
               <RiAddLine className="size-4" />
-              Invite member
+              Invitar miembro
             </button>
           </div>
         </div>
@@ -138,7 +138,7 @@ export default function EquipoPage() {
         {/* ─── Members List ─── */}
         <div className="rounded-2xl border-2 border-[#E5E5E5] bg-white p-6">
           <h2 className="text-sm font-semibold text-[#666666] tracking-wide uppercase mb-1">
-            Team members
+            Miembros del equipo
           </h2>
           <div>
             {members.map((member) => (
@@ -153,9 +153,9 @@ export default function EquipoPage() {
       <Dialog open={inviteOpen} onOpenChange={(v) => { if (!v) { reset(); setInviteOpen(false) } }}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-[#111111]">Invite member</DialogTitle>
+            <DialogTitle className="text-[#111111]">Invitar miembro</DialogTitle>
             <DialogDescription className="text-[#666666]">
-              The new member will receive an email with instructions to join.
+              El nuevo miembro recibirá un email con instrucciones para unirse.
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit(onInvite)} className="space-y-4">
@@ -163,14 +163,14 @@ export default function EquipoPage() {
               <Label className="text-sm font-medium text-[#111111]">Email</Label>
               <Input
                 type="email"
-                placeholder="name@company.com"
+                placeholder="nombre@empresa.com"
                 className="border-[#E5E5E5] rounded-xl h-14 text-base"
                 {...field("email")}
               />
               {errors.email && <p className="text-[#E5484D] text-xs">{errors.email.message}</p>}
             </div>
             <div className="space-y-1.5">
-              <Label className="text-sm font-medium text-[#111111]">Role</Label>
+              <Label className="text-sm font-medium text-[#111111]">Rol</Label>
               <Select value={role} onValueChange={(v) => setValue("role", v as InviteInput["role"])}>
                 <SelectTrigger className="border-[#E5E5E5] rounded-xl h-14 px-4 text-base">
                   <SelectValue />
@@ -193,14 +193,14 @@ export default function EquipoPage() {
                 onClick={() => { reset(); setInviteOpen(false) }}
                 className="flex-1 h-11 rounded-xl border-2 border-[#E5E5E5] bg-white px-5 text-sm font-semibold text-[#111111] shadow-sm hover:bg-gray-50 hover:border-[#d0d0d0] transition-all"
               >
-                Cancel
+                Cancelar
               </button>
               <button
                 type="submit"
-                className="flex-1 h-11 gap-2 rounded-xl bg-[#7C3AED] px-5 text-sm font-semibold text-[#111111] shadow-sm hover:bg-[#6D28D9] active:bg-[#5B21B6] transition-all inline-flex items-center justify-center"
+                className="flex-1 h-11 gap-2 rounded-xl bg-white border-2 border-[#111111] px-5 text-sm font-semibold text-[#111111] shadow-sm hover:bg-[#F5F5F5] active:bg-[#E5E5E5] transition-all inline-flex items-center justify-center"
               >
                 <RiMailSendLine className="size-4" />
-                Send invitation
+                Enviar invitación
               </button>
             </div>
           </form>

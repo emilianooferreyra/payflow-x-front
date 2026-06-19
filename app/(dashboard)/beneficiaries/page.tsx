@@ -7,14 +7,11 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { toast } from "sonner"
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Badge } from "@/components/ui/badge"
 import {
   RiBankLine,
   RiAddLine,
@@ -36,9 +33,9 @@ const CURRENCIES = ["USD", "ARS", "USDT", "BRL"] as const
 const BENEFICIARY_TYPES = ["CBU", "CVU", "ALIAS", "SWIFT", "ACCOUNT_NUMBER"] as const
 
 const schema = z.object({
-  alias: z.string().min(1, "Required"),
+  alias: z.string().min(1, "Requerido"),
   beneficiaryType: z.enum(BENEFICIARY_TYPES),
-  accountNumber: z.string().min(1, "Required"),
+  accountNumber: z.string().min(1, "Requerido"),
   bankName: z.string().optional(),
   currency: z.enum(CURRENCIES),
   country: z.string().optional(),
@@ -53,7 +50,7 @@ const TYPE_LABELS: Record<string, string> = {
   CVU: "CVU",
   ALIAS: "Alias",
   SWIFT: "SWIFT",
-  ACCOUNT_NUMBER: "Account Number",
+  ACCOUNT_NUMBER: "Número de cuenta",
 }
 
 export default function BeneficiariesPage() {
@@ -76,7 +73,7 @@ export default function BeneficiariesPage() {
     mutationFn: (data: CreateBeneficiaryPayload) => createBeneficiary(data),
     onSuccess() {
       qc.invalidateQueries({ queryKey: ["beneficiaries"] })
-      toast.success("Beneficiary created")
+      toast.success("Beneficiario creado")
       closeDialog()
     },
     onError(err) { toast.error(getErrorMessage(err)) },
@@ -87,7 +84,7 @@ export default function BeneficiariesPage() {
       updateBeneficiary(id, data),
     onSuccess() {
       qc.invalidateQueries({ queryKey: ["beneficiaries"] })
-      toast.success("Beneficiary updated")
+      toast.success("Beneficiario actualizado")
       closeDialog()
     },
     onError(err) { toast.error(getErrorMessage(err)) },
@@ -97,7 +94,7 @@ export default function BeneficiariesPage() {
     mutationFn: (id: string) => deleteBeneficiary(id),
     onSuccess() {
       qc.invalidateQueries({ queryKey: ["beneficiaries"] })
-      toast.success("Beneficiary removed")
+      toast.success("Beneficiario eliminado")
       setDeleting(null)
     },
     onError(err) { toast.error(getErrorMessage(err)) },
@@ -146,72 +143,92 @@ export default function BeneficiariesPage() {
   }
 
   return (
-    <main className="flex flex-1 flex-col">
-      <div className="flex flex-1 flex-col gap-6 p-4 lg:p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold">Beneficiaries</h1>
-            <p className="text-muted-foreground text-sm">Manage your withdrawal destinations</p>
+    <main className="flex-1 bg-white">
+      <div className="mx-auto max-w-5xl px-6 py-10 lg:px-8 lg:py-14">
+        <div className="mb-12">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="inline-flex size-2 rounded-full bg-[#111111]" />
+            <span className="text-xs font-medium text-[#666666] tracking-wide uppercase">
+              DESTINOS
+            </span>
           </div>
-          <Button size="sm" onClick={openCreate}>
-            <RiAddLine className="mr-1.5 size-4" />
-            New Beneficiary
-          </Button>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-4xl font-bold tracking-tight text-[#111111] sm:text-5xl">
+                Beneficiarios
+              </h1>
+              <p className="mt-3 max-w-lg text-lg text-[#666666] leading-relaxed">
+                Gestioná las cuentas bancarias y billeteras donde enviás fondos.
+              </p>
+            </div>
+            <button
+              onClick={openCreate}
+              className="h-12 gap-2 rounded-xl bg-white border-2 border-[#111111] px-6 text-base font-semibold text-[#111111] shadow-sm hover:bg-[#F5F5F5] active:bg-[#E5E5E5] transition-all"
+            >
+              <RiAddLine className="size-4 -ml-1 mr-1.5 inline" />
+              Nuevo beneficiario
+            </button>
+          </div>
         </div>
 
         {isLoading ? (
           <div className="space-y-3">
             {Array.from({ length: 3 }).map((_, i) => (
-              <Card key={i}>
-                <CardContent className="p-4">
-                  <Skeleton className="h-5 w-40 mb-2" />
-                  <Skeleton className="h-4 w-60" />
-                </CardContent>
-              </Card>
+              <div key={i} className="rounded-2xl border-2 border-[#E5E5E5] bg-white p-6">
+                <Skeleton className="h-5 w-40 mb-2" />
+                <Skeleton className="h-4 w-60" />
+              </div>
             ))}
           </div>
         ) : beneficiaries?.length === 0 ? (
-          <Card>
-            <CardContent className="flex flex-col items-center py-12">
-              <RiBankLine className="size-10 text-muted-foreground/40 mb-3" />
-              <p className="text-sm font-medium mb-1">No beneficiaries yet</p>
-              <p className="text-xs text-muted-foreground mb-4">Add a bank account or wallet to send funds to.</p>
-              <Button size="sm" onClick={openCreate}>
-                <RiAddLine className="mr-1.5 size-4" />
-                Add Beneficiary
-              </Button>
-            </CardContent>
-          </Card>
+          <div className="rounded-2xl border-2 border-[#E5E5E5] bg-white p-10 text-center">
+            <RiBankLine className="size-10 text-[#666666]/40 mb-3 mx-auto" />
+            <p className="text-sm font-medium mb-1">Sin beneficiarios aún</p>
+            <p className="text-xs text-[#666666] mb-4">Agregá una cuenta bancaria o billetera para enviar fondos.</p>
+            <button
+              onClick={openCreate}
+              className="h-9 gap-2 rounded-xl border-2 border-[#111111] bg-white px-4 text-sm font-semibold text-[#111111] shadow-sm hover:bg-[#F5F5F5] active:bg-[#E5E5E5] transition-all"
+            >
+              <RiAddLine className="mr-1.5 size-4 inline" />
+              Agregar beneficiario
+            </button>
+          </div>
         ) : (
           <div className="space-y-3">
             {beneficiaries?.map((b) => (
-              <Card key={b.id}>
-                <CardContent className="flex items-center gap-4 p-4">
-                  <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 shrink-0">
-                    <RiBankLine className="size-5 text-primary" />
+              <div key={b.id} className="rounded-2xl border-2 border-[#E5E5E5] bg-white p-6">
+                <div className="flex items-center gap-4">
+                  <div className="flex size-10 items-center justify-center rounded-lg bg-[#F5F5F5] shrink-0">
+                    <RiBankLine className="size-5 text-[#111111]" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <p className="text-sm font-semibold">{b.alias}</p>
-                      <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4">
+                      <span className="inline-flex items-center rounded-full bg-[#F5F5F5] px-2 py-0.5 text-xs font-medium text-[#666666]">
                         {b.currency}
-                      </Badge>
+                      </span>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-0.5">
+                    <p className="text-xs text-[#666666] mt-0.5">
                       {TYPE_LABELS[b.beneficiaryType]}: {b.accountNumber}
                       {b.bankName ? ` · ${b.bankName}` : ""}
                     </p>
                   </div>
                   <div className="flex gap-1">
-                    <Button variant="ghost" size="icon" className="size-8" onClick={() => openEdit(b)}>
+                    <button
+                      onClick={() => openEdit(b)}
+                      className="flex size-9 items-center justify-center rounded-xl border-2 border-[#E5E5E5] bg-white hover:bg-[#F5F5F5] transition-all"
+                    >
                       <RiPencilLine className="size-4" />
-                    </Button>
-                    <Button variant="ghost" size="icon" className="size-8 text-destructive" onClick={() => setDeleting(b.id)}>
+                    </button>
+                    <button
+                      onClick={() => setDeleting(b.id)}
+                      className="flex size-9 items-center justify-center rounded-xl border-2 border-[#E5E5E5] bg-white hover:bg-[#F5F5F5] transition-all text-[#E5484D]"
+                    >
                       <RiDeleteBin6Line className="size-4" />
-                    </Button>
+                    </button>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             ))}
           </div>
         )}
@@ -221,20 +238,20 @@ export default function BeneficiariesPage() {
       <Dialog open={dialogOpen} onOpenChange={(open) => { if (!open) closeDialog() }}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>{editing ? "Edit Beneficiary" : "New Beneficiary"}</DialogTitle>
+            <DialogTitle>{editing ? "Editar beneficiario" : "Nuevo beneficiario"}</DialogTitle>
             <DialogDescription>
-              {editing ? "Update the beneficiary details." : "Add a new withdrawal destination."}
+              {editing ? "Actualizá los datos del beneficiario." : "Agregá un nuevo destino de retiro."}
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-1.5">
               <Label>Alias</Label>
-              <Input placeholder="My Savings Account" className="h-14 text-base" {...form.register("alias")} />
+              <Input placeholder="Mi cuenta de ahorros" className="h-14 text-base" {...form.register("alias")} />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label>Type</Label>
+                <Label>Tipo</Label>
                 <Select
                   value={form.watch("beneficiaryType")}
                   onValueChange={(v) => form.setValue("beneficiaryType", v as typeof BENEFICIARY_TYPES[number])}
@@ -248,7 +265,7 @@ export default function BeneficiariesPage() {
                 </Select>
               </div>
               <div className="space-y-1.5">
-                <Label>Currency</Label>
+                <Label>Moneda</Label>
                 <Select
                   value={form.watch("currency")}
                   onValueChange={(v) => form.setValue("currency", v as typeof CURRENCIES[number])}
@@ -264,36 +281,38 @@ export default function BeneficiariesPage() {
             </div>
 
             <div className="space-y-1.5">
-              <Label>Account Number</Label>
-              <Input placeholder="CBU / CVU / SWIFT / Alias" className="h-14 text-base" {...form.register("accountNumber")} />
+              <Label>Número de cuenta</Label>
+              <Input placeholder="CBU / CVU / Alias / SWIFT" className="h-14 text-base" {...form.register("accountNumber")} />
             </div>
 
             <div className="space-y-1.5">
-              <Label>Bank Name <span className="text-muted-foreground text-xs">(optional)</span></Label>
+              <Label>Nombre del banco <span className="text-[#666666] text-xs">(opcional)</span></Label>
               <Input placeholder="Santander, Mercado Pago..." className="h-14 text-base" {...form.register("bankName")} />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label>Country</Label>
+                <Label>País</Label>
                 <Input placeholder="AR" className="h-14 text-base" {...form.register("country")} />
               </div>
               <div className="space-y-1.5">
-                <Label>Document Type <span className="text-muted-foreground text-xs">(optional)</span></Label>
-                <Input placeholder="DNI, CUIT..." className="h-14 text-base" {...form.register("documentType")} />
+              <Label>Tipo de documento <span className="text-[#666666] text-xs">(opcional)</span></Label>
+              <Input placeholder="DNI, CUIT..." className="h-14 text-base" {...form.register("documentType")} />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <Label>Document Number <span className="text-muted-foreground text-xs">(optional)</span></Label>
+              <Label>Número de documento <span className="text-[#666666] text-xs">(opcional)</span></Label>
               <Input placeholder="..." className="h-14 text-base" {...form.register("documentNumber")} />
             </div>
 
             <div className="flex justify-end gap-2 pt-2">
-              <Button type="button" variant="outline" onClick={closeDialog}>Cancel</Button>
-              <Button type="submit" disabled={createMut.isPending || updateMut.isPending}>
-                {editing ? "Save Changes" : "Create"}
-              </Button>
+              <button type="button" onClick={closeDialog} className="h-12 gap-2 rounded-xl border-2 border-[#E5E5E5] bg-white px-6 text-base font-semibold text-[#111111] shadow-sm hover:bg-gray-50 hover:border-[#d0d0d0] transition-all">
+                Cancelar
+              </button>
+              <button type="submit" disabled={createMut.isPending || updateMut.isPending} className="h-12 gap-2 rounded-xl bg-white border-2 border-[#111111] px-6 text-base font-semibold text-[#111111] shadow-sm hover:bg-[#F5F5F5] active:bg-[#E5E5E5] transition-all">
+                {editing ? "Guardar cambios" : "Crear"}
+              </button>
             </div>
           </form>
         </DialogContent>
@@ -303,20 +322,22 @@ export default function BeneficiariesPage() {
       <Dialog open={!!deleting} onOpenChange={(open) => { if (!open) setDeleting(null) }}>
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
-            <DialogTitle>Remove Beneficiary</DialogTitle>
+            <DialogTitle>Eliminar beneficiario</DialogTitle>
             <DialogDescription>
-              This won't affect past transactions. You can add them again later.
+              Esto no afecta transacciones anteriores. Podés agregarlo de nuevo después.
             </DialogDescription>
           </DialogHeader>
           <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setDeleting(null)}>Cancel</Button>
-            <Button
-              variant="destructive"
+            <button onClick={() => setDeleting(null)} className="h-12 gap-2 rounded-xl border-2 border-[#E5E5E5] bg-white px-6 text-base font-semibold text-[#111111] shadow-sm hover:bg-gray-50 hover:border-[#d0d0d0] transition-all">
+              Cancelar
+            </button>
+            <button
               disabled={deleteMut.isPending}
               onClick={() => deleting && deleteMut.mutate(deleting)}
+              className="h-12 gap-2 rounded-xl border-2 border-[#E5484D] bg-white px-6 text-base font-semibold text-[#E5484D] shadow-sm hover:bg-red-50 transition-all"
             >
-              {deleteMut.isPending ? "Removing..." : "Remove"}
-            </Button>
+              {deleteMut.isPending ? "Eliminando..." : "Eliminar"}
+            </button>
           </div>
         </DialogContent>
       </Dialog>

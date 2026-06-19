@@ -12,6 +12,7 @@
 .agents
 .claude
 .DESIGN.md
+/openspec
 skill-lock.json
 
 # testing

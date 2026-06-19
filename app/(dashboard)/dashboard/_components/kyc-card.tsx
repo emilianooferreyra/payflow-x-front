@@ -25,10 +25,10 @@ export function KycCard({ status }: { status: KycStatus }) {
 
   const config = STATUS_CONFIG[status]
   const descriptions: Record<KycStatus, string> = {
-    PENDING: "Complete your identity verification to operate",
-    IN_REVIEW: "We are reviewing your documentation",
+    PENDING: "Completá tu verificación de identidad para operar",
+    IN_REVIEW: "Estamos revisando tu documentación",
     APPROVED: "",
-    REJECTED: "Please resubmit your documentation",
+    REJECTED: "Por favor, reenviá tu documentación",
   }
 
   return (
@@ -40,7 +40,7 @@ export function KycCard({ status }: { status: KycStatus }) {
             <p className="text-sm font-medium text-foreground">{descriptions[status]}</p>
           </div>
           <Badge variant={config.badgeVariant} className="rounded-full px-3">
-            {status === "PENDING" ? "Pending" : status === "IN_REVIEW" ? "In review" : status}
+            {status === "PENDING" ? "Pendiente" : status === "IN_REVIEW" ? "En revisión" : status}
           </Badge>
           <RiArrowRightSLine className="size-4 text-muted-foreground shrink-0" />
         </CardContent>

@@ -11,9 +11,6 @@ import {
   RiLockPasswordLine,
   RiShieldCheckLine,
 } from "@remixicon/react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -93,99 +90,114 @@ export default function SeguridadPage() {
     : null
 
   return (
-    <main className="flex flex-1 flex-col">
-      <div className="max-w-2xl mx-auto flex flex-col gap-6 p-4 lg:p-6 w-full">
+    <main className="flex-1 bg-white">
+      <div className="mx-auto max-w-3xl px-6 py-10 lg:px-8 lg:py-14">
+
+        <div className="mb-12">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="inline-flex size-2 rounded-full bg-[#111111]" />
+            <span className="text-xs font-medium text-[#666666] tracking-wide uppercase">
+              SEGURIDAD
+            </span>
+          </div>
+          <h1 className="text-4xl font-bold tracking-tight text-[#111111] sm:text-5xl">
+            Seguridad
+          </h1>
+          <p className="mt-3 max-w-lg text-lg text-[#666666] leading-relaxed">
+            Protegé tu cuenta administrando métodos de inicio de sesión, contraseñas y sesiones activas.
+          </p>
+        </div>
 
         {/* Métodos de inicio de sesión */}
-        <div>
-          <h2 className="text-base font-semibold mb-1">Métodos de inicio de sesión</h2>
-          <p className="text-sm text-muted-foreground mb-3">
+        <div className="mb-14">
+          <h3 className="text-sm font-semibold text-[#666666] tracking-wide uppercase mb-5">Métodos de inicio de sesión</h3>
+          <p className="text-sm text-[#666666] mb-3">
             Personaliza la forma en que accedes a tu cuenta. Vincula tu perfil de Google y configura contraseñas para una autenticación segura y sin complicaciones.
           </p>
-          <Card>
-            <CardContent className="p-0 divide-y divide-border">
-              {/* Google */}
-              <div className="flex items-center gap-4 px-4 py-4">
-                <div className="flex size-10 shrink-0 items-center justify-center rounded-lg border bg-background">
-                  <RiGoogleLine className="size-5" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium">Google</p>
-                  <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
-                </div>
-                {isGoogleUser ? (
-                  <Badge className="bg-primary/10 text-primary border-0 shrink-0">Activado</Badge>
-                ) : (
-                  <Button variant="outline" size="sm" className="shrink-0" onClick={() => toast.info("Próximamente")}>
-                    Vincular
-                  </Button>
-                )}
+          <div className="rounded-2xl border-2 border-[#E5E5E5] bg-white divide-y divide-[#E5E5E5]">
+            {/* Google */}
+            <div className="flex items-center gap-4 px-4 py-4">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-lg border bg-white">
+                <RiGoogleLine className="size-5" />
               </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium">Google</p>
+                <p className="text-xs text-[#666666] truncate">{user?.email}</p>
+              </div>
+              {isGoogleUser ? (
+                <span className="inline-flex items-center rounded-full bg-[#059669]/10 px-2 py-0.5 text-xs font-medium text-[#059669] shrink-0">Activado</span>
+              ) : (
+                <button
+                  className="h-9 gap-2 rounded-xl border-2 border-[#E5484D] bg-white px-4 text-sm font-semibold text-[#E5484D] shadow-sm hover:bg-red-50 transition-all shrink-0"
+                  onClick={() => toast.info("Próximamente")}
+                >
+                  Vincular
+                </button>
+              )}
+            </div>
 
-              {/* Email y contraseña */}
-              <div className="flex items-center gap-4 px-4 py-4">
-                <div className="flex size-10 shrink-0 items-center justify-center rounded-lg border bg-background">
-                  <RiMailLine className="size-5 text-muted-foreground" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium">Email y contraseña</p>
-                  <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
-                </div>
-                <Badge className="bg-primary/10 text-primary border-0 shrink-0">Activado</Badge>
+            {/* Email y contraseña */}
+            <div className="flex items-center gap-4 px-4 py-4">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-lg border bg-white">
+                <RiMailLine className="size-5 text-[#666666]" />
               </div>
-            </CardContent>
-          </Card>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium">Email y contraseña</p>
+                <p className="text-xs text-[#666666] truncate">{user?.email}</p>
+              </div>
+              <span className="inline-flex items-center rounded-full bg-[#059669]/10 px-2 py-0.5 text-xs font-medium text-[#059669] shrink-0">Activado</span>
+            </div>
+          </div>
         </div>
 
         {/* Acceso con contraseña */}
-        <div>
-          <h2 className="text-base font-semibold mb-1">Acceso con contraseña</h2>
-          <p className="text-sm text-muted-foreground mb-3">
+        <div className="mb-14">
+          <h3 className="text-sm font-semibold text-[#666666] tracking-wide uppercase mb-5">Acceso con contraseña</h3>
+          <p className="text-sm text-[#666666] mb-3">
             Utiliza una contraseña para iniciar sesión además de tus métodos de acceso vinculados.
           </p>
-          <Card>
-            <CardContent className="px-4 py-4">
-              <Button variant="outline" onClick={() => setChangePassOpen(true)} className="gap-2">
-                <RiLockPasswordLine className="size-4" />
-                Cambiar Contraseña
-              </Button>
-            </CardContent>
-          </Card>
+          <div className="rounded-2xl border-2 border-[#E5E5E5] bg-white p-6">
+            <button
+              className="h-12 gap-2 rounded-xl border-2 border-[#E5E5E5] bg-white px-6 text-base font-semibold text-[#111111] shadow-sm hover:bg-gray-50 hover:border-[#d0d0d0] transition-all"
+              onClick={() => setChangePassOpen(true)}
+            >
+              <RiLockPasswordLine className="size-4" />
+              Cambiar Contraseña
+            </button>
+          </div>
         </div>
 
         {/* Sesiones iniciadas */}
-        <div>
-          <div className="flex items-center justify-between mb-1">
-            <h2 className="text-base font-semibold">Sesiones iniciadas</h2>
+        <div className="mb-14">
+          <div className="flex items-center justify-between mb-5">
+            <h3 className="text-sm font-semibold text-[#666666] tracking-wide uppercase">Sesiones iniciadas</h3>
             {sessions.length > 1 && (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-destructive hover:text-destructive text-xs h-7"
+              <button
+                className="h-9 gap-2 rounded-xl border-2 border-transparent hover:border-[#E5E5E5] bg-white px-4 text-sm font-semibold text-[#E5484D] hover:bg-[#F5F5F5] transition-all"
                 onClick={() => revokeAll()}
                 disabled={revokingAll}
               >
                 Cerrar todas
-              </Button>
+              </button>
             )}
           </div>
-          <p className="text-sm text-muted-foreground mb-3">
+          <p className="text-sm text-[#666666] mb-3">
             Tienes la sesión iniciada en estos dispositivos o has iniciado sesión en ellos en los últimos 28 días.
           </p>
-          <Card>
+          <div className="rounded-2xl border-2 border-[#E5E5E5] bg-white">
             {sessionsLoading ? (
-              <CardContent className="px-4 py-6 text-sm text-muted-foreground">Cargando sesiones…</CardContent>
+              <div className="px-4 py-6 text-sm text-[#666666]">Cargando sesiones…</div>
             ) : sessions.length === 0 ? (
-              <CardContent className="px-4 py-6 text-sm text-muted-foreground">No hay sesiones activas.</CardContent>
+              <div className="px-4 py-6 text-sm text-[#666666]">No hay sesiones activas.</div>
             ) : (
-              <CardContent className="p-0">
-                <div className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-x-4 px-4 py-2 border-b">
-                  <span className="text-xs font-medium text-muted-foreground">Sesión</span>
-                  <span className="text-xs font-medium text-muted-foreground">Última actividad</span>
-                  <span className="text-xs font-medium text-muted-foreground">Origen</span>
+              <>
+                <div className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-x-4 px-4 py-2 border-b border-[#E5E5E5]">
+                  <span className="text-xs font-medium text-[#666666]">Sesión</span>
+                  <span className="text-xs font-medium text-[#666666]">Última actividad</span>
+                  <span className="text-xs font-medium text-[#666666]">Origen</span>
                   <span />
                 </div>
-                <div className="divide-y divide-border">
+                <div className="divide-y divide-[#E5E5E5]">
                   {sessions.map((session) => {
                     const { browser, os } = parseBrowser(session.userAgent)
                     const isCurrent = session.id === currentSession?.id
@@ -193,44 +205,42 @@ export default function SeguridadPage() {
                     return (
                       <div key={session.id} className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-x-4 px-4 py-3">
                         <div className="flex items-center gap-3 min-w-0">
-                          <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted">
-                            <RiComputerLine className="size-4 text-muted-foreground" />
+                          <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#F5F5F5]">
+                            <RiComputerLine className="size-4 text-[#666666]" />
                           </div>
                           <div className="min-w-0">
                             <div className="flex items-center gap-2">
                               <p className="text-sm font-medium truncate">{browser}</p>
                               {isCurrent && (
-                                <Badge className="bg-primary/10 text-primary border-0 text-[10px] px-1.5 py-0 shrink-0">
+                                <span className="inline-flex items-center rounded-full bg-[#F5F5F5] px-2 py-0.5 text-xs font-medium text-[#666666] shrink-0">
                                   Sesión actual
-                                </Badge>
+                                </span>
                               )}
                             </div>
-                            <p className="text-xs text-muted-foreground">{os}</p>
+                            <p className="text-xs text-[#666666]">{os}</p>
                           </div>
                         </div>
-                        <span className="text-sm text-muted-foreground whitespace-nowrap">
+                        <span className="text-sm text-[#666666] whitespace-nowrap">
                           {relativeTime(lastActive)}
                         </span>
-                        <span className="text-sm text-muted-foreground capitalize">
+                        <span className="text-sm text-[#666666] capitalize">
                           {session.userAgent?.toLowerCase().includes("google") ? "google" : "local"}
                         </span>
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="size-8 shrink-0"
+                        <button
+                          className="flex size-9 items-center justify-center rounded-xl border-2 border-[#E5E5E5] bg-white hover:bg-[#F5F5F5] transition-all shrink-0"
                           onClick={() => revoke(session.id)}
                           disabled={revoking || isCurrent}
                           title={isCurrent ? "Sesión actual" : "Cerrar sesión"}
                         >
                           <RiLogoutBoxRLine className="size-4" />
-                        </Button>
+                        </button>
                       </div>
                     )
                   })}
                 </div>
-              </CardContent>
+              </>
             )}
-          </Card>
+          </div>
         </div>
 
       </div>
@@ -246,28 +256,38 @@ export default function SeguridadPage() {
           </DialogHeader>
           {emailSent ? (
             <div className="flex flex-col items-center gap-3 py-4 text-center">
-              <div className="flex size-12 items-center justify-center rounded-full bg-emerald-500/10">
-                <RiShieldCheckLine className="size-6 text-emerald-500" />
+              <div className="flex size-12 items-center justify-center rounded-full bg-[#059669]/10">
+                <RiShieldCheckLine className="size-6 text-[#059669]" />
               </div>
               <p className="text-sm font-medium">Email enviado</p>
-              <p className="text-xs text-muted-foreground">Revisá tu bandeja de entrada en <strong>{user?.email}</strong></p>
-              <Button variant="outline" className="mt-2 w-full" onClick={() => { setChangePassOpen(false); setEmailSent(false) }}>
+              <p className="text-xs text-[#666666]">Revisá tu bandeja de entrada en <strong>{user?.email}</strong></p>
+              <button
+                className="h-12 gap-2 rounded-xl border-2 border-[#E5E5E5] bg-white px-6 text-base font-semibold text-[#111111] shadow-sm hover:bg-gray-50 hover:border-[#d0d0d0] transition-all mt-2 w-full"
+                onClick={() => { setChangePassOpen(false); setEmailSent(false) }}
+              >
                 Cerrar
-              </Button>
+              </button>
             </div>
           ) : (
             <div className="space-y-4">
               <div className="space-y-1.5">
                 <Label>Email</Label>
-                <Input value={user?.email ?? ""} readOnly className="bg-muted" />
+                <Input value={user?.email ?? ""} readOnly className="bg-[#F5F5F5]" />
               </div>
               <div className="flex gap-3">
-                <Button variant="outline" className="flex-1" onClick={() => setChangePassOpen(false)}>
+                <button
+                  className="h-12 gap-2 rounded-xl border-2 border-[#E5E5E5] bg-white px-6 text-base font-semibold text-[#111111] shadow-sm hover:bg-gray-50 hover:border-[#d0d0d0] transition-all flex-1"
+                  onClick={() => setChangePassOpen(false)}
+                >
                   Cancelar
-                </Button>
-                <Button className="flex-1" onClick={() => sendResetEmail()} disabled={sendingEmail || !user?.email}>
+                </button>
+                <button
+                  className="h-12 gap-2 rounded-xl bg-white border-2 border-[#111111] px-6 text-base font-semibold text-[#111111] shadow-sm hover:bg-[#F5F5F5] active:bg-[#E5E5E5] transition-all flex-1"
+                  onClick={() => sendResetEmail()}
+                  disabled={sendingEmail || !user?.email}
+                >
                   {sendingEmail ? "Enviando…" : "Enviar email"}
-                </Button>
+                </button>
               </div>
             </div>
           )}

@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     default: "PayFlow",
     template: "%s | PayFlow",
   },
-  description: "Multi-currency wallets, investments and exchange for freelancers.",
+  description: "Billeteras multi-moneda, inversiones y cambio para freelancers.",
 }
 
 export default function RootLayout({
@@ -23,7 +23,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
-      lang="en"
+      lang="es"
       suppressHydrationWarning
       className={cn("antialiased", inter.variable, dmSans.variable, geistMono.variable)}
     >

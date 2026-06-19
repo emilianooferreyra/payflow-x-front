@@ -25,28 +25,28 @@ export function RecentDeposits({ transactions, isLoading }: RecentDepositsProps)
       ) : transactions.length === 0 ? (
         <div className="py-10 text-center">
           <RiArrowDownCircleLine className="mx-auto size-8 text-[#666666]/30 mb-2" />
-          <p className="text-sm text-[#666666]">No deposits yet</p>
+          <p className="text-sm text-[#666666]">Sin depósitos aún</p>
           <p className="text-xs text-[#666666] mt-1">
-            Share your account details to receive your first deposit
+            Compartí tus datos de cuenta para recibir tu primer depósito
           </p>
         </div>
       ) : (
         <div className="divide-y divide-[#E5E5E5]">
           <div className="flex items-center justify-between pb-3 text-xs font-semibold text-[#666666] tracking-wide uppercase">
-            <span>Sender</span>
+            <span>Remitente</span>
             <div className="flex items-center gap-8">
-              <span className="w-20 text-right">Amount</span>
-              <span className="w-24 text-right">Date</span>
-              <span className="w-20 text-right">Status</span>
+              <span className="w-20 text-right">Monto</span>
+              <span className="w-24 text-right">Fecha</span>
+              <span className="w-20 text-right">Estado</span>
             </div>
           </div>
           {transactions.slice(0, 5).map((tx) => (
             <div key={tx.id} className="flex items-center justify-between py-3">
               <p className="text-sm font-medium text-[#111111]">
-                {tx.description || "Deposit"}
+                {tx.description || "Depósito"}
               </p>
               <div className="flex items-center gap-8">
-                <p className="w-20 text-right text-sm font-semibold text-[#7C3AED]">
+                <p className="w-20 text-right text-sm font-semibold text-[#111111]">
                   +{formatCurrency(tx.amount)}
                 </p>
                 <p className="w-24 text-right text-xs text-[#666666]">
@@ -55,8 +55,8 @@ export function RecentDeposits({ transactions, isLoading }: RecentDepositsProps)
                     month: "short",
                   })}
                 </p>
-                <span className="w-20 text-right text-[10px] font-medium text-[#7C3AED] uppercase">
-                  {tx.status === "COMPLETED" ? "Completed" : tx.status}
+                <span className="w-20 text-right text-[10px] font-medium text-[#111111] uppercase">
+                  {tx.status === "COMPLETED" ? "Completado" : tx.status}
                 </span>
               </div>
             </div>

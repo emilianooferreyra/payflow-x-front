@@ -10,38 +10,38 @@ import {
 const steps = [
   {
     icon: RiBankLine,
-    title: "Client pays you",
+    title: "El cliente te paga",
     description:
-      "Your customer sends funds via ACH, wire transfer, or crypto from their bank or wallet.",
-    color: "bg-[#7C3AED]/10 text-[#7C3AED]",
+      "Tu cliente envía fondos mediante ACH, transferencia wire o cripto desde su banco o billetera.",
+    color: "bg-[#111111]/10 text-[#111111]",
   },
   {
     icon: RiArrowDownLine,
-    title: "Funds arrive at PayFlow",
+    title: "Los fondos llegan a PayFlow",
     description:
-      "We receive the payment on your behalf. Funds are held in a segregated account with our partner banks.",
-    color: "bg-[#7C3AED]/10 text-[#7C3AED]",
+      "Recibimos el pago en tu nombre. Los fondos se mantienen en una cuenta segregada con nuestros bancos asociados.",
+    color: "bg-[#111111]/10 text-[#111111]",
   },
   {
     icon: RiTimeLine,
-    title: "Settlement period",
+    title: "Período de liquidación",
     description:
-      "Depending on the payment method, funds settle within 1–3 business days. Crypto and wire transfers settle fastest.",
+      "Según el método de pago, los fondos se liquidan en 1 a 3 días hábiles. Las transferencias crypto y wire son las más rápidas.",
     color: "bg-[#E5A500]/10 text-[#E5A500]",
   },
   {
     icon: RiCheckLine,
-    title: "Balance updates",
+    title: "Actualización de saldo",
     description:
-      "Once settled, your PayFlow balance is updated. You can see the full lifecycle in the transaction timeline.",
+      "Una vez liquidado, tu saldo de PayFlow se actualiza. Podés ver el ciclo completo en la línea de tiempo de transacciones.",
     color: "bg-[#22C55E]/10 text-[#22C55E]",
   },
   {
     icon: RiArrowUpLine,
-    title: "Withdraw whenever",
+    title: "Retirá cuando quieras",
     description:
-      "Move your funds to your local bank account or external wallet. No minimums, no hidden fees.",
-    color: "bg-[#7C3AED]/10 text-[#7C3AED]",
+      "Mové tus fondos a tu cuenta bancaria local o billetera externa. Sin mínimos, sin comisiones ocultas.",
+    color: "bg-[#111111]/10 text-[#111111]",
   },
 ]
 
@@ -53,16 +53,16 @@ export default function HowItWorksPage() {
         {/* Header */}
         <div className="mb-12">
           <div className="flex items-center gap-2 mb-3">
-            <span className="inline-flex size-2 rounded-full bg-[#7C3AED]" />
+            <span className="inline-flex size-2 rounded-full bg-[#111111]" />
             <span className="text-xs font-medium text-[#666666] tracking-wide uppercase">
-              The flow explained
+              El flujo explicado
             </span>
           </div>
           <h1 className="text-4xl font-bold tracking-tight text-[#111111] sm:text-5xl">
-            How it works
+            Cómo funciona
           </h1>
           <p className="mt-3 max-w-lg text-lg text-[#666666] leading-relaxed">
-            From client payment to your wallet — understand every step of the money flow.
+            Desde el pago del cliente hasta tu billetera — entendé cada paso del flujo de dinero.
           </p>
         </div>
 
@@ -97,17 +97,17 @@ export default function HowItWorksPage() {
         {/* Entity model */}
         <div className="mt-16 rounded-2xl border border-[#E5E5E5] bg-white p-7 lg:p-8">
           <h2 className="text-sm font-semibold text-[#111111] tracking-wide uppercase mb-5">
-            Entity Model
+            Modelo de entidades
           </h2>
           <div className="grid gap-4 sm:grid-cols-2">
             {[
-              { name: "User", description: "Your account with KYC, settings, and profile." },
-              { name: "Account", description: "Holds your balance across supported currencies." },
-              { name: "Transaction", description: "Every inflow and outflow recorded with full state history." },
-              { name: "Withdrawal", description: "External transfer to your bank or wallet." },
+              { name: "User", description: "Tu cuenta con KYC, configuración y perfil." },
+              { name: "Account", description: "Mantiene tu saldo en las monedas disponibles." },
+              { name: "Transaction", description: "Cada ingreso y egreso registrado con historial completo de estados." },
+              { name: "Withdrawal", description: "Transferencia externa a tu banco o billetera." },
             ].map((entity) => (
               <div key={entity.name} className="rounded-xl border border-[#E5E5E5] bg-[#FAFAFA] p-4">
-                <p className="text-sm font-bold text-[#7C3AED]">{entity.name}</p>
+                <p className="text-sm font-bold text-[#111111]">{entity.name}</p>
                 <p className="text-xs text-[#666666] mt-1">{entity.description}</p>
               </div>
             ))}
@@ -118,10 +118,10 @@ export default function HowItWorksPage() {
         <div className="mt-10 text-center">
           <Link
             href="/depositar"
-            className="inline-flex items-center gap-2 rounded-xl bg-[#7C3AED] px-6 py-3 text-sm font-semibold text-white hover:bg-[#6D28D9] transition-colors"
+            className="inline-flex items-center gap-2 rounded-xl bg-white border-2 border-[#111111] px-6 py-3 text-sm font-semibold text-[#111111] hover:bg-[#F5F5F5] transition-colors"
           >
             <RiArrowDownLine className="size-4" />
-            Make your first deposit
+            Hacé tu primer depósito
           </Link>
         </div>
 

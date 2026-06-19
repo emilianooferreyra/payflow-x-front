@@ -17,14 +17,14 @@ import { RiCheckboxCircleLine } from "@remixicon/react"
 
 const schema = z
   .object({
-    name: z.string().min(1, "First name is required"),
-    lastName: z.string().min(1, "Last name is required"),
-    email: z.string().email("Enter a valid email"),
-    password: z.string().min(8, "Password must be at least 8 characters"),
+    name: z.string().min(1, "El nombre es obligatorio"),
+    lastName: z.string().min(1, "El apellido es obligatorio"),
+    email: z.string().email("Ingresá un email válido"),
+    password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres"),
     confirmPassword: z.string(),
   })
   .refine((d) => d.password === d.confirmPassword, {
-    message: "Passwords don't match",
+    message: "Las contraseñas no coinciden",
     path: ["confirmPassword"],
   })
 
@@ -54,13 +54,13 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
                 <RiCheckboxCircleLine className="size-8 text-positive" />
               </div>
               <div className="space-y-1">
-                <h1 className="text-2xl font-bold">Account created!</h1>
+                <h1 className="text-2xl font-bold">¡Cuenta creada!</h1>
                 <p className="text-sm text-muted-foreground">
-                  Welcome to PayFlow. You can now sign in.
+                  Bienvenido a PayFlow. Ya podés iniciar sesión.
                 </p>
               </div>
               <Button className="w-full" onClick={() => router.push("/login")}>
-                Sign in
+                Iniciar sesión
               </Button>
             </div>
             <div className="relative hidden flex-col items-start justify-end bg-sidebar p-10 md:flex">
@@ -69,7 +69,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
               <div className="relative space-y-2">
                 <p className="text-3xl font-bold">PayFlow</p>
                 <p className="max-w-xs text-sm text-muted-foreground">
-                  Your account is ready. Start managing your money.
+                  Tu cuenta está lista. Empezá a gestionar tu dinero.
                 </p>
               </div>
             </div>
@@ -89,9 +89,9 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
           >
             <div className="flex flex-col gap-5">
               <div className="flex flex-col items-center gap-2 text-center">
-                <h1 className="text-2xl font-bold">Create your account</h1>
+                <h1 className="text-2xl font-bold">Creá tu cuenta</h1>
                 <p className="text-balance text-sm text-muted-foreground">
-                  Start managing your money with PayFlow
+                  Empezá a gestionar tu dinero con PayFlow
                 </p>
               </div>
 
@@ -103,14 +103,14 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="grid gap-2">
-                  <Label htmlFor="name">First name</Label>
+                  <Label htmlFor="name">Nombre</Label>
                   <Input id="name" placeholder="Nicolás" {...field("name")} />
                   {errors.name && (
                     <p className="text-xs text-destructive">{errors.name.message}</p>
                   )}
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="lastName">Last name</Label>
+                  <Label htmlFor="lastName">Apellido</Label>
                   <Input id="lastName" placeholder="Rodríguez" {...field("lastName")} />
                   {errors.lastName && (
                     <p className="text-xs text-destructive">{errors.lastName.message}</p>
@@ -123,7 +123,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
                 <Input
                   id="email"
                   type="email"
-                  placeholder="you@example.com"
+                  placeholder="tu@ejemplo.com"
                   autoComplete="email"
                   {...field("email")}
                 />
@@ -133,7 +133,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">Contraseña</Label>
                 <Input
                   id="password"
                   type="password"
@@ -147,7 +147,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="confirmPassword">Confirm password</Label>
+                <Label htmlFor="confirmPassword">Confirmar contraseña</Label>
                 <Input
                   id="confirmPassword"
                   type="password"
@@ -161,12 +161,12 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
               </div>
 
               <Button type="submit" className="w-full" disabled={mutation.isPending}>
-                {mutation.isPending ? "Creating account…" : "Create account"}
+                {mutation.isPending ? "Creando cuenta…" : "Crear cuenta"}
               </Button>
 
               <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
                 <span className="bg-card text-muted-foreground relative z-10 px-2">
-                  Or continue with
+                  O continuá con
                 </span>
               </div>
 
@@ -182,13 +182,13 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
                     fill="currentColor"
                   />
                 </svg>
-                Sign up with Google
+                Registrarse con Google
               </Button>
 
               <p className="text-center text-sm">
-                Already have an account?{" "}
+                ¿Ya tenés cuenta?{" "}
                 <Link href="/login" className="underline underline-offset-4">
-                  Sign in
+                  Iniciar sesión
                 </Link>
               </p>
             </div>
@@ -200,7 +200,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
             <div className="relative space-y-2">
               <p className="text-3xl font-bold">PayFlow</p>
               <p className="max-w-xs text-sm text-muted-foreground">
-                Receive USD, convert to ARS or USDT, and grow your money with daily yield — built for freelancers.
+                Recibí USD, convertí a ARS o USDT, y hacé crecer tu dinero con rendimiento diario — creado para freelancers.
               </p>
             </div>
           </div>
@@ -208,13 +208,13 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
       </Card>
 
       <p className="text-muted-foreground px-6 text-center text-xs">
-        By creating an account you agree to our{" "}
+        Al crear una cuenta aceptás nuestros{" "}
         <Link href="#" className="underline underline-offset-4 hover:text-primary">
-          Terms of Service
+          Términos y condiciones
         </Link>{" "}
-        and{" "}
+        y{" "}
         <Link href="#" className="underline underline-offset-4 hover:text-primary">
-          Privacy Policy
+          Política de privacidad
         </Link>
         .
       </p>

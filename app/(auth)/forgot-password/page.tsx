@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils"
 // ─── Step 1: email ────────────────────────────────────────────────────────────
 
 const emailSchema = z.object({
-  email: z.string().email("Enter a valid email"),
+  email:   z.string().email("Ingresá un email válido"),
 })
 
 type EmailValues = z.infer<typeof emailSchema>
@@ -39,9 +39,9 @@ function StepEmail({ onSuccess }: { onSuccess: (email: string) => void }) {
     <form onSubmit={handleSubmit((v) => mutation.mutate(v))}>
       <div className="flex flex-col gap-6">
         <div className="flex flex-col items-center gap-2 text-center">
-          <h1 className="text-2xl font-bold">Forgot your password?</h1>
+          <h1 className="text-2xl font-bold">¿Olvidaste tu contraseña?</h1>
           <p className="text-balance text-sm text-muted-foreground">
-            Enter your email and we&apos;ll send you a 6-digit code
+            Ingresá tu email y te enviaremos un código de 6 dígitos
           </p>
         </div>
 
@@ -66,13 +66,13 @@ function StepEmail({ onSuccess }: { onSuccess: (email: string) => void }) {
         </div>
 
         <Button type="submit" className="w-full" disabled={mutation.isPending}>
-          {mutation.isPending ? "Sending…" : "Send code"}
+           {mutation.isPending ? "Enviando…" : "Enviar código"}
         </Button>
 
         <p className="text-center text-sm">
-          Remember your password?{" "}
+           ¿Recordás tu contraseña?{" "}
           <Link href="/login" className="underline underline-offset-4">
-            Sign in
+            Iniciar sesión
           </Link>
         </p>
       </div>
@@ -84,12 +84,12 @@ function StepEmail({ onSuccess }: { onSuccess: (email: string) => void }) {
 
 const resetSchema = z
   .object({
-    code: z.string().length(6, "Code must be exactly 6 digits"),
-    password: z.string().min(8, "Password must be at least 8 characters"),
+    code: z  .string().length(6, "El código debe tener exactamente 6 dígitos"),
+    password: z.string()  .min(8, "La contraseña debe tener al menos 8 caracteres"),
     confirmPassword: z.string(),
   })
   .refine((d) => d.password === d.confirmPassword, {
-    message: "Passwords don't match",
+    message: "Las contraseñas no coinciden",
     path: ["confirmPassword"],
   })
 
@@ -114,9 +114,9 @@ function StepReset({ email }: { email: string }) {
     <form onSubmit={handleSubmit((v) => mutation.mutate(v))}>
       <div className="flex flex-col gap-6">
         <div className="flex flex-col items-center gap-2 text-center">
-          <h1 className="text-2xl font-bold">Check your email</h1>
+          <h1 className="text-2xl font-bold">Revisá tu email</h1>
           <p className="text-balance text-sm text-muted-foreground">
-            We sent a 6-digit code to <span className="text-foreground font-medium">{email}</span>
+            Enviamos un código de 6 dígitos a <span className="text-foreground font-medium">{email}</span>
           </p>
         </div>
 
@@ -128,12 +128,12 @@ function StepReset({ email }: { email: string }) {
 
         {mutation.isSuccess && (
           <p className="rounded-md bg-green-500/10 px-3 py-2 text-center text-sm text-green-400">
-            Password changed — redirecting…
+            Contraseña cambiada — redirigiendo…
           </p>
         )}
 
         <div className="grid gap-2">
-          <Label htmlFor="code">6-digit code</Label>
+          <Label htmlFor="code">Código de 6 dígitos</Label>
           <Input
             id="code"
             placeholder="123456"
@@ -148,7 +148,7 @@ function StepReset({ email }: { email: string }) {
         </div>
 
         <div className="grid gap-2">
-          <Label htmlFor="password">New password</Label>
+          <Label htmlFor="password">Nueva contraseña</Label>
           <Input
             id="password"
             type="password"
@@ -162,7 +162,7 @@ function StepReset({ email }: { email: string }) {
         </div>
 
         <div className="grid gap-2">
-          <Label htmlFor="confirmPassword">Confirm new password</Label>
+          <Label htmlFor="confirmPassword">Confirmar nueva contraseña</Label>
           <Input
             id="confirmPassword"
             type="password"
@@ -176,7 +176,7 @@ function StepReset({ email }: { email: string }) {
         </div>
 
         <Button type="submit" className="w-full" disabled={mutation.isPending || mutation.isSuccess}>
-          {mutation.isPending ? "Resetting…" : "Reset password"}
+           {mutation.isPending ? "Restableciendo…" : "Restablecer contraseña"}
         </Button>
       </div>
     </form>
@@ -208,8 +208,8 @@ export default function ForgotPasswordPage() {
                   <p className="text-3xl font-bold">PayFlow</p>
                   <p className="max-w-xs text-sm text-muted-foreground">
                     {email
-                      ? "Enter the code from your email and choose a new password."
-                      : "We'll send a code to your email. It expires in 10 minutes."}
+                      ? "Ingresá el código de tu email y elegí una nueva contraseña."
+                      : "Te enviaremos un código a tu email. Vence en 10 minutos."}
                   </p>
                 </div>
               </div>
@@ -218,7 +218,7 @@ export default function ForgotPasswordPage() {
 
           <p className="text-muted-foreground px-6 text-center text-xs">
             <Link href="/login" className="underline underline-offset-4 hover:text-primary">
-              Back to sign in
+              Volver a iniciar sesión
             </Link>
           </p>
         </div>

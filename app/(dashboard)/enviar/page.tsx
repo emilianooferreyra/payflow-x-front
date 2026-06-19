@@ -56,11 +56,11 @@ function getArrival(from: string, to: string): string {
 }
 
 const STEPS = [
-  { step: 1, label: "Who", emoji: "👤" },
-  { step: 2, label: "Details", emoji: "📋" },
-  { step: 3, label: "Amount", emoji: "💰" },
-  { step: 4, label: "Check", emoji: "✅" },
-  { step: 5, label: "Done", emoji: "🎉" },
+  { step: 1, label: "Quién", emoji: "👤" },
+  { step: 2, label: "Datos", emoji: "📋" },
+  { step: 3, label: "Monto", emoji: "💰" },
+  { step: 4, label: "Revisar", emoji: "✅" },
+  { step: 5, label: "Listo", emoji: "🎉" },
 ] as const
 
 function RecipientTypeCard({
@@ -84,7 +84,7 @@ function RecipientTypeCard({
       onClick={onClick}
       className={`relative w-full text-left rounded-2xl p-6 transition-all duration-200 ${
         selected
-          ? "bg-[#7C3AED] text-[#111111] shadow-lg shadow-[#7C3AED]/20"
+          ? "bg-[#111111] text-[#111111] shadow-lg shadow-[#111111]/20"
           : "bg-white text-[#111111] border-2 border-[#E5E5E5] hover:border-[#d0d0d0] hover:shadow-md"
       }`}
     >
@@ -109,7 +109,7 @@ export default function EnviarPage() {
   const [sendCurrency, setSendCurrency] = useState("USD")
   const [receiveCurrency, setReceiveCurrency] = useState("USD")
   const [sendAmount, setSendAmount] = useState("")
-  const [transferStatus, setTransferStatus] = useState<"Pending" | "Completed">("Pending")
+  const [transferStatus, setTransferStatus] = useState<"Pendiente" | "Completado">("Pendiente")
   const qrRef = useRef<HTMLCanvasElement>(null)
 
   const { data: wallets } = useQuery({ queryKey: ["wallets"], queryFn: getWallets })
@@ -124,8 +124,8 @@ export default function EnviarPage() {
 
   function getRecipientName() {
     if (recipientType === "existing" && selectedBeneficiary) return selectedBeneficiary.alias
-    if (recipientType === "new") return newRecipient.name || "New recipient"
-    if (recipientType === "business") return businessRecipient.companyName || "Business"
+    if (recipientType === "new") return newRecipient.name || "Nuevo destinatario"
+    if (recipientType === "business") return businessRecipient.companyName || "Empresa"
     return ""
   }
 
@@ -140,14 +140,14 @@ export default function EnviarPage() {
 
   useEffect(() => {
     if (step !== 5) return
-    setTransferStatus("Pending")
+    setTransferStatus("Pendiente")
     const qrData = `payflow://send/${sendCurrency}/${sendAmount}/${receiveCurrency}`
     if (qrRef.current) {
       QRCode.toCanvas(qrRef.current, qrData, { width: 140, margin: 1, color: { dark: "#111111" } })
     }
     const timer = setTimeout(() => {
-      setTransferStatus("Completed")
-      toast.success("Your transfer has been completed! The recipient has received the funds.")
+      setTransferStatus("Completado")
+      toast.success("¡Tu transferencia se completó! El destinatario recibió los fondos.")
     }, 6000)
     return () => clearTimeout(timer)
   }, [step])
@@ -173,7 +173,7 @@ export default function EnviarPage() {
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#666666] hover:text-[#111111] transition-colors mb-8 tracking-wide uppercase"
         >
           <RiArrowLeftLine className="size-3.5" />
-          Home
+          Inicio
         </Link>
 
         {/* ─── Steps indicator ─── */}
@@ -181,7 +181,7 @@ export default function EnviarPage() {
           {STEPS.map((s, i) => (
             <div key={s.step} className="flex items-center gap-2">
               <div className={`flex items-center gap-2 rounded-full px-3 py-1.5 transition-all ${
-                s.step === step ? "bg-[#7C3AED] text-[#111111]" : s.step < step ? "bg-[#F5F5F5] text-[#666666]" : "text-[#666666]"
+                s.step === step ? "bg-[#111111] text-[#111111]" : s.step < step ? "bg-[#F5F5F5] text-[#666666]" : "text-[#666666]"
               }`}>
                 <span className={`text-sm ${s.step === step ? "" : "hidden"} sm:inline`}>
                   {s.emoji}
@@ -190,7 +190,7 @@ export default function EnviarPage() {
                 {s.step < step && <RiCheckLine className="size-3" />}
               </div>
               {i < STEPS.length - 1 && (
-                <div className={`w-6 sm:w-10 h-px ${s.step < step ? "bg-[#7C3AED]" : "bg-[#E5E5E5]"}`} />
+                <div className={`w-6 sm:w-10 h-px ${s.step < step ? "bg-[#111111]" : "bg-[#E5E5E5]"}`} />
               )}
             </div>
           ))}
@@ -200,17 +200,17 @@ export default function EnviarPage() {
         <div className="mb-10">
           <div className="flex items-center gap-3 mb-3">
             <span className="text-sm font-medium text-[#666666] tracking-wide uppercase">
-              {STEPS.find((s) => s.step === step)?.emoji} Step {step} of 5
+              {STEPS.find((s) => s.step === step)?.emoji} Paso {step} de 5
             </span>
           </div>
           <h1 className="text-4xl font-bold tracking-tight text-[#111111] sm:text-5xl">
-            {step === 1 && <>Who are you<br />sending to?</>}
-            {step === 2 && recipientType === "existing" && "Select a beneficiary"}
-            {step === 2 && recipientType === "new" && "New recipient details"}
-            {step === 2 && recipientType === "business" && "Business details"}
-            {step === 3 && <>How much are you<br />sending?</>}
-            {step === 4 && "Review your transfer"}
-            {step === 5 && "Transfer sent 🎉"}
+            {step === 1 && <>¿A quién le<br />enviás?</>}
+            {step === 2 && recipientType === "existing" && "Seleccioná un beneficiario"}
+            {step === 2 && recipientType === "new" && "Datos del nuevo destinatario"}
+            {step === 2 && recipientType === "business" && "Datos de la empresa"}
+            {step === 3 && <>¿Cuánto<br />enviás?</>}
+            {step === 4 && "Revisá tu transferencia"}
+            {step === 5 && "Transferencia enviada 🎉"}
           </h1>
         </div>
 
@@ -220,36 +220,36 @@ export default function EnviarPage() {
             <div className="grid gap-4 sm:grid-cols-3">
               <RecipientTypeCard
                 icon={RiUserLine}
-                title="Existing Recipient"
-                description="Send to a saved beneficiary."
+                title="Destinatario existente"
+                description="Enviá a un beneficiario guardado."
                 emoji="👤"
                 selected={recipientType === "existing"}
                 onClick={() => setRecipientType("existing")}
               />
               <RecipientTypeCard
                 icon={RiUserAddLine}
-                title="New Recipient"
-                description="Add someone new to send to."
+                title="Nuevo destinatario"
+                description="Agregá alguien nuevo para enviarle."
                 emoji="🆕"
                 selected={recipientType === "new"}
                 onClick={() => setRecipientType("new")}
               />
               <RecipientTypeCard
                 icon={RiBuildingLine}
-                title="Business"
-                description="Pay a company or vendor."
+                title="Empresa"
+                description="Pagá a una empresa o proveedor."
                 emoji="🏢"
                 selected={recipientType === "business"}
                 onClick={() => setRecipientType("business")}
               />
             </div>
-            <button
-              disabled={!recipientType}
-              onClick={() => setStep(2)}
-              className="w-full h-14 gap-2 rounded-2xl bg-[#111111] px-6 text-base font-semibold text-white shadow-sm hover:bg-[#2a2a2a] disabled:opacity-30 disabled:cursor-not-allowed transition-all inline-flex items-center justify-center"
-            >
-              Continue
-              <RiArrowRightLine className="size-4" />
+              <button
+                disabled={!recipientType}
+                onClick={() => setStep(2)}
+                className="w-full h-14 gap-2 rounded-2xl bg-white border-2 border-[#111111] px-6 text-base font-semibold text-[#111111] shadow-sm hover:bg-[#F5F5F5] disabled:opacity-30 disabled:cursor-not-allowed transition-all inline-flex items-center justify-center"
+              >
+                Continuar
+                <RiArrowRightLine className="size-4" />
             </button>
           </div>
         )}
@@ -261,14 +261,14 @@ export default function EnviarPage() {
               {recipientType === "existing" && (
                 <div className="space-y-5">
                   <div className="space-y-1.5">
-                    <Label className="text-sm font-semibold text-[#111111]">Beneficiary</Label>
+                    <Label className="text-sm font-semibold text-[#111111]">Beneficiario</Label>
                     <Select value={existingId} onValueChange={setExistingId}>
                       <SelectTrigger className="bg-white border-0 rounded-xl h-14 px-4 text-base shadow-sm">
-                        <SelectValue placeholder="Select a beneficiary" />
+                        <SelectValue placeholder="Seleccioná un beneficiario" />
                       </SelectTrigger>
                       <SelectContent sideOffset={8}>
                         {beneficiaries?.length === 0 ? (
-                          <div className="p-3 text-sm text-[#666666] text-center">No saved beneficiaries</div>
+                          <div className="p-3 text-sm text-[#666666] text-center">Sin beneficiarios guardados</div>
                         ) : (
                           beneficiaries?.map((b) => (
                             <SelectItem key={b.id} value={b.id} className="py-3 text-base">
@@ -286,19 +286,19 @@ export default function EnviarPage() {
                   {selectedBeneficiary && (
                     <div className="bg-white rounded-xl p-4 space-y-2.5">
                       <div className="flex justify-between text-sm">
-                        <span className="text-[#666666]">Account</span>
+                        <span className="text-[#666666]">Cuenta</span>
                         <span className="font-semibold text-[#111111]">···{selectedBeneficiary.accountNumber.slice(-4)}</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-[#666666]">Bank</span>
+                        <span className="text-[#666666]">Banco</span>
                         <span className="font-semibold text-[#111111]">{selectedBeneficiary.bankName ?? "—"}</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-[#666666]">Currency</span>
+                        <span className="text-[#666666]">Moneda</span>
                         <span className="font-semibold text-[#111111]">{selectedBeneficiary.currency}</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-[#666666]">Country</span>
+                        <span className="text-[#666666]">País</span>
                         <span className="font-semibold text-[#111111]">{selectedBeneficiary.country}</span>
                       </div>
                     </div>
@@ -309,40 +309,40 @@ export default function EnviarPage() {
               {recipientType === "new" && (
                 <div className="space-y-5">
                   <div className="space-y-1.5">
-                    <Label className="text-sm font-semibold text-[#111111]">Full name</Label>
+                    <Label className="text-sm font-semibold text-[#111111]">Nombre completo</Label>
                     <Input
-                      placeholder="John Doe"
+                      placeholder="Juan Pérez"
                       value={newRecipient.name}
                       onChange={(e) => setNewRecipient({ ...newRecipient, name: e.target.value })}
-                      className="border border-[#E5E5E5] rounded-xl h-14 text-base bg-white shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-200 focus-visible:border-[#7C3AED] focus-visible:ring-[3px] focus-visible:ring-[#7C3AED]/15 placeholder:text-[#D4D4D4]"
+                      className="border border-[#E5E5E5] rounded-xl h-14 text-base bg-white shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-200 focus-visible:border-[#111111] focus-visible:ring-[3px] focus-visible:ring-[#111111]/15 placeholder:text-[#D4D4D4]"
                     />
                   </div>
                   <div className="space-y-1.5">
                     <Label className="text-sm font-semibold text-[#111111]">Email</Label>
                     <Input
                       type="email"
-                      placeholder="john@example.com"
+                      placeholder="ejemplo@correo.com"
                       value={newRecipient.email}
                       onChange={(e) => setNewRecipient({ ...newRecipient, email: e.target.value })}
-                      className="border border-[#E5E5E5] rounded-xl h-14 text-base bg-white shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-200 focus-visible:border-[#7C3AED] focus-visible:ring-[3px] focus-visible:ring-[#7C3AED]/15 placeholder:text-[#D4D4D4]"
+                      className="border border-[#E5E5E5] rounded-xl h-14 text-base bg-white shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-200 focus-visible:border-[#111111] focus-visible:ring-[3px] focus-visible:ring-[#111111]/15 placeholder:text-[#D4D4D4]"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <Label className="text-sm font-semibold text-[#111111]">Account number</Label>
+                    <Label className="text-sm font-semibold text-[#111111]">Número de cuenta</Label>
                     <Input
                       placeholder="000123456789"
                       value={newRecipient.accountNumber}
                       onChange={(e) => setNewRecipient({ ...newRecipient, accountNumber: e.target.value })}
-                      className="border border-[#E5E5E5] rounded-xl h-14 text-base bg-white shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-200 focus-visible:border-[#7C3AED] focus-visible:ring-[3px] focus-visible:ring-[#7C3AED]/15 placeholder:text-[#D4D4D4]"
+                      className="border border-[#E5E5E5] rounded-xl h-14 text-base bg-white shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-200 focus-visible:border-[#111111] focus-visible:ring-[3px] focus-visible:ring-[#111111]/15 placeholder:text-[#D4D4D4]"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <Label className="text-sm font-semibold text-[#111111]">Bank name</Label>
+                    <Label className="text-sm font-semibold text-[#111111]">Nombre del banco</Label>
                     <Input
-                      placeholder="Bank of America"
+                      placeholder="Banco Santander"
                       value={newRecipient.bankName}
                       onChange={(e) => setNewRecipient({ ...newRecipient, bankName: e.target.value })}
-                      className="border border-[#E5E5E5] rounded-xl h-14 text-base bg-white shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-200 focus-visible:border-[#7C3AED] focus-visible:ring-[3px] focus-visible:ring-[#7C3AED]/15 placeholder:text-[#D4D4D4]"
+                      className="border border-[#E5E5E5] rounded-xl h-14 text-base bg-white shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-200 focus-visible:border-[#111111] focus-visible:ring-[3px] focus-visible:ring-[#111111]/15 placeholder:text-[#D4D4D4]"
                     />
                   </div>
                 </div>
@@ -351,39 +351,39 @@ export default function EnviarPage() {
               {recipientType === "business" && (
                 <div className="space-y-5">
                   <div className="space-y-1.5">
-                    <Label className="text-sm font-semibold text-[#111111]">Company name</Label>
+                    <Label className="text-sm font-semibold text-[#111111]">Nombre de la empresa</Label>
                     <Input
-                      placeholder="Acme Inc."
+                      placeholder="Acme S.A."
                       value={businessRecipient.companyName}
                       onChange={(e) => setBusinessRecipient({ ...businessRecipient, companyName: e.target.value })}
-                      className="border border-[#E5E5E5] rounded-xl h-14 text-base bg-white shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-200 focus-visible:border-[#7C3AED] focus-visible:ring-[3px] focus-visible:ring-[#7C3AED]/15 placeholder:text-[#D4D4D4]"
+                      className="border border-[#E5E5E5] rounded-xl h-14 text-base bg-white shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-200 focus-visible:border-[#111111] focus-visible:ring-[3px] focus-visible:ring-[#111111]/15 placeholder:text-[#D4D4D4]"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <Label className="text-sm font-semibold text-[#111111]">Tax ID</Label>
+                    <Label className="text-sm font-semibold text-[#111111]">CUIT/CUIL</Label>
                     <Input
                       placeholder="XX-XXXXXXX"
                       value={businessRecipient.taxId}
                       onChange={(e) => setBusinessRecipient({ ...businessRecipient, taxId: e.target.value })}
-                      className="border border-[#E5E5E5] rounded-xl h-14 text-base bg-white shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-200 focus-visible:border-[#7C3AED] focus-visible:ring-[3px] focus-visible:ring-[#7C3AED]/15 placeholder:text-[#D4D4D4]"
+                      className="border border-[#E5E5E5] rounded-xl h-14 text-base bg-white shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-200 focus-visible:border-[#111111] focus-visible:ring-[3px] focus-visible:ring-[#111111]/15 placeholder:text-[#D4D4D4]"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <Label className="text-sm font-semibold text-[#111111]">Account number</Label>
+                    <Label className="text-sm font-semibold text-[#111111]">Número de cuenta</Label>
                     <Input
                       placeholder="000123456789"
                       value={businessRecipient.accountNumber}
                       onChange={(e) => setBusinessRecipient({ ...businessRecipient, accountNumber: e.target.value })}
-                      className="border border-[#E5E5E5] rounded-xl h-14 text-base bg-white shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-200 focus-visible:border-[#7C3AED] focus-visible:ring-[3px] focus-visible:ring-[#7C3AED]/15 placeholder:text-[#D4D4D4]"
+                      className="border border-[#E5E5E5] rounded-xl h-14 text-base bg-white shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-200 focus-visible:border-[#111111] focus-visible:ring-[3px] focus-visible:ring-[#111111]/15 placeholder:text-[#D4D4D4]"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <Label className="text-sm font-semibold text-[#111111]">Bank name</Label>
+                    <Label className="text-sm font-semibold text-[#111111]">Nombre del banco</Label>
                     <Input
-                      placeholder="Chase"
+                      placeholder="Banco Galicia"
                       value={businessRecipient.bankName}
                       onChange={(e) => setBusinessRecipient({ ...businessRecipient, bankName: e.target.value })}
-                      className="border border-[#E5E5E5] rounded-xl h-14 text-base bg-white shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-200 focus-visible:border-[#7C3AED] focus-visible:ring-[3px] focus-visible:ring-[#7C3AED]/15 placeholder:text-[#D4D4D4]"
+                      className="border border-[#E5E5E5] rounded-xl h-14 text-base bg-white shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-200 focus-visible:border-[#111111] focus-visible:ring-[3px] focus-visible:ring-[#111111]/15 placeholder:text-[#D4D4D4]"
                     />
                   </div>
                 </div>
@@ -395,13 +395,13 @@ export default function EnviarPage() {
                 onClick={() => setStep(1)}
                 className="flex-1 h-14 rounded-2xl border-2 border-[#E5E5E5] bg-white px-6 text-base font-semibold text-[#111111] hover:bg-gray-50 transition-all"
               >
-                Back
+                Volver
               </button>
               <button
                 onClick={() => setStep(3)}
-                className="flex-1 h-14 gap-2 rounded-2xl bg-[#111111] px-6 text-base font-semibold text-white hover:bg-[#2a2a2a] transition-all inline-flex items-center justify-center"
+                className="flex-1 h-14 gap-2 rounded-2xl bg-white border-2 border-[#111111] px-6 text-base font-semibold text-[#111111] hover:bg-[#F5F5F5] transition-all inline-flex items-center justify-center"
               >
-                Continue
+                Continuar
                 <RiArrowRightLine className="size-4" />
               </button>
             </div>
@@ -413,7 +413,7 @@ export default function EnviarPage() {
           <div className="space-y-4">
             {/* You send */}
             <div className="rounded-2xl bg-[#111111] p-7">
-              <Label className="text-xs font-semibold text-white/60 tracking-wide uppercase mb-4 block">You send</Label>
+              <Label className="text-xs font-semibold text-white/60 tracking-wide uppercase mb-4 block">Enviás</Label>
               <div className="flex items-center gap-4">
                 <span className="text-3xl font-bold text-white">$</span>
                 <Input
@@ -440,7 +440,7 @@ export default function EnviarPage() {
               </div>
               {wallet && (
                 <p className="text-xs text-white/40 mt-3">
-                  Balance: {formatCurrency(Number(wallet.balance), sendCurrency)}
+                  Saldo: {formatCurrency(Number(wallet.balance), sendCurrency)}
                 </p>
               )}
             </div>
@@ -448,7 +448,7 @@ export default function EnviarPage() {
             {/* Recipient gets */}
             <div className="rounded-2xl bg-[#F5F5F5] p-7">
               <div className="flex items-center justify-between mb-4">
-                <Label className="text-xs font-semibold text-[#666666] tracking-wide uppercase">Recipient gets</Label>
+                <Label className="text-xs font-semibold text-[#666666] tracking-wide uppercase">El destinatario recibe</Label>
                 <span className="text-xs text-[#666666]">{sendAmount ? `1 ${sendCurrency} ≈ ${rate.toFixed(4)} ${receiveCurrency}` : ""}</span>
               </div>
               <div className="flex items-center gap-4">
@@ -474,12 +474,12 @@ export default function EnviarPage() {
             {sendAmount && Number(sendAmount) > 0 && (
               <div className="rounded-2xl bg-[#F5F5F5] p-5 space-y-2.5 -mt-3">
                 <div className="flex justify-between text-sm text-[#666666]">
-                  <span>Transfer fee</span>
+                  <span>Comisión de transferencia</span>
                   <span className="font-medium text-[#111111]">{formatCurrency(fee)} {sendCurrency}</span>
                 </div>
                 <div className="flex justify-between text-sm text-[#666666]">
-                  <span>Estimated arrival</span>
-                  <span className="font-medium text-[#7C3AED]">{arrivalTime}</span>
+                  <span>Llegada estimada</span>
+                  <span className="font-medium text-[#111111]">{arrivalTime}</span>
                 </div>
               </div>
             )}
@@ -489,14 +489,14 @@ export default function EnviarPage() {
                 onClick={() => setStep(2)}
                 className="flex-1 h-14 rounded-2xl border-2 border-[#E5E5E5] bg-white px-6 text-base font-semibold text-[#111111] hover:bg-gray-50 transition-all"
               >
-                Back
+                Volver
               </button>
               <button
                 disabled={!sendAmount || Number(sendAmount) <= 0}
                 onClick={() => setStep(4)}
-                className="flex-1 h-14 gap-2 rounded-2xl bg-[#111111] px-6 text-base font-semibold text-white hover:bg-[#2a2a2a] disabled:opacity-30 disabled:cursor-not-allowed transition-all inline-flex items-center justify-center"
+                className="flex-1 h-14 gap-2 rounded-2xl bg-white border-2 border-[#111111] px-6 text-base font-semibold text-[#111111] hover:bg-[#F5F5F5] disabled:opacity-30 disabled:cursor-not-allowed transition-all inline-flex items-center justify-center"
               >
-                Continue
+                Continuar
                 <RiArrowRightLine className="size-4" />
               </button>
             </div>
@@ -509,40 +509,40 @@ export default function EnviarPage() {
             <div className="rounded-2xl bg-[#F5F5F5] p-7">
               {/* You send */}
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-semibold text-[#666666] tracking-wide uppercase">You send</span>
+                <span className="text-xs font-semibold text-[#666666] tracking-wide uppercase">Enviás</span>
                 <span className="text-xl font-bold text-[#111111]">{formatCurrency(Number(sendAmount))} {sendCurrency}</span>
               </div>
               <div className="flex items-center justify-between mb-5 pb-5 border-b border-[#E5E5E5]">
-                <span className="text-xs font-semibold text-[#666666] tracking-wide uppercase">Fee</span>
+                <span className="text-xs font-semibold text-[#666666] tracking-wide uppercase">Comisión</span>
                 <span className="text-sm font-medium text-[#E5484D]">-{formatCurrency(fee)} {sendCurrency}</span>
               </div>
 
               {/* Recipient receives */}
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <span className="text-xs font-semibold text-[#666666] tracking-wide uppercase block mb-0.5">Recipient receives</span>
+                  <span className="text-xs font-semibold text-[#666666] tracking-wide uppercase block mb-0.5">El destinatario recibe</span>
                   {receiveCurrency !== sendCurrency && (
-                    <span className="text-xs text-[#666666]">Rate: 1 {sendCurrency} ≈ {rate.toFixed(4)} {receiveCurrency}</span>
+                    <span className="text-xs text-[#666666]">Tipo de cambio: 1 {sendCurrency} ≈ {rate.toFixed(4)} {receiveCurrency}</span>
                   )}
                 </div>
-                <span className="text-2xl font-bold text-[#7C3AED]">{formatCurrency(recipientGets)} {receiveCurrency}</span>
+                <span className="text-2xl font-bold text-[#111111]">{formatCurrency(recipientGets)} {receiveCurrency}</span>
               </div>
 
               {/* Recipient info */}
               <div className="bg-white rounded-xl p-4 space-y-2.5">
                 <div className="flex justify-between text-sm">
-                  <span className="text-[#666666]">Recipient</span>
+                  <span className="text-[#666666]">Destinatario</span>
                   <span className="font-semibold text-[#111111]">{getRecipientName()}</span>
                 </div>
                 {getRecipientAccount() && (
                   <div className="flex justify-between text-sm">
-                    <span className="text-[#666666]">Account</span>
+                    <span className="text-[#666666]">Cuenta</span>
                     <span className="font-semibold text-[#111111]">{getRecipientAccount()}</span>
                   </div>
                 )}
                 <div className="flex justify-between text-sm">
-                  <span className="text-[#666666]">Estimated arrival</span>
-                  <span className="font-semibold text-[#7C3AED]">{arrivalTime}</span>
+                  <span className="text-[#666666]">Llegada estimada</span>
+                  <span className="font-semibold text-[#111111]">{arrivalTime}</span>
                 </div>
               </div>
             </div>
@@ -552,16 +552,16 @@ export default function EnviarPage() {
                 onClick={() => setStep(3)}
                 className="flex-1 h-14 rounded-2xl border-2 border-[#E5E5E5] bg-white px-6 text-base font-semibold text-[#111111] hover:bg-gray-50 transition-all"
               >
-                Back
+                Volver
               </button>
               <button
                 onClick={() => {
-                  toast.success("Transfer submitted! We'll notify you when it's complete.")
+                  toast.success("¡Transferencia enviada! Te avisaremos cuando se complete.")
                   setStep(5)
                 }}
-                className="flex-1 h-14 gap-2 rounded-2xl bg-[#7C3AED] px-6 text-base font-semibold text-[#111111] hover:bg-[#6D28D9] transition-all inline-flex items-center justify-center"
+                className="flex-1 h-14 gap-2 rounded-2xl bg-white border-2 border-[#111111] px-6 text-base font-semibold text-[#111111] hover:bg-[#F5F5F5] transition-all inline-flex items-center justify-center"
               >
-                Confirm & send
+                Confirmar y enviar
                 <RiArrowRightUpLine className="size-4" />
               </button>
             </div>
@@ -571,11 +571,11 @@ export default function EnviarPage() {
         {/* ─── Step 5: Success ─── */}
         {step === 5 && (
           <div className="space-y-6">
-            <div className="rounded-2xl bg-[#F5F3FF] border-2 border-[#7C3AED] p-8 text-center">
+            <div className="rounded-2xl bg-[#F5F5F5] border-2 border-[#111111] p-8 text-center">
               <span className="text-5xl mb-4 block">🎉</span>
-              <h2 className="text-3xl font-bold text-[#111111] mb-2">Transfer sent!</h2>
+              <h2 className="text-3xl font-bold text-[#111111] mb-2">¡Transferencia enviada!</h2>
               <p className="text-[#666666] max-w-sm mx-auto">
-                We&apos;re processing your payment. The recipient will receive the funds soon.
+                Estamos procesando tu pago. El destinatario recibirá los fondos pronto.
               </p>
             </div>
 
@@ -590,32 +590,32 @@ export default function EnviarPage() {
 
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-[#666666]">Recipient</span>
+                  <span className="text-sm text-[#666666]">Destinatario</span>
                   <span className="text-sm font-semibold text-[#111111]">{getRecipientName()}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-[#666666]">Amount sent</span>
+                  <span className="text-sm text-[#666666]">Monto enviado</span>
                   <span className="text-sm font-semibold text-[#111111]">{formatCurrency(Number(sendAmount))} {sendCurrency}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-[#666666]">Recipient receives</span>
+                  <span className="text-sm text-[#666666]">El destinatario recibe</span>
                   <span className="text-sm font-semibold text-[#111111]">{formatCurrency(recipientGets)} {receiveCurrency}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-[#666666]">Estimated arrival</span>
-                  <span className="inline-flex items-center gap-1 text-sm font-semibold text-[#7C3AED]">
+                  <span className="inline-flex items-center gap-1 text-sm font-semibold text-[#111111]">
                     <RiTimeLine className="size-3.5" />
                     {arrivalTime}
                   </span>
                 </div>
                 <div className="flex justify-between items-center pt-4 border-t border-[#E5E5E5]">
-                  <span className="text-sm text-[#666666]">Status</span>
+                  <span className="text-sm text-[#666666]">Estado</span>
                   <span className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold transition-all ${
-                    transferStatus === "Completed"
-                      ? "bg-[#7C3AED] text-[#111111]"
+                    transferStatus === "Completado"
+                      ? "bg-[#111111] text-[#111111]"
                       : "bg-[#E5A500]/15 text-[#E5A500]"
                   }`}>
-                    {transferStatus === "Completed" ? (
+                    {transferStatus === "Completado" ? (
                       <RiCheckboxCircleLine className="size-3" />
                     ) : (
                       <RiTimeLine className="size-3" />
@@ -628,9 +628,9 @@ export default function EnviarPage() {
 
             <button
               onClick={resetFlow}
-              className="w-full h-14 gap-2 rounded-2xl bg-[#111111] px-6 text-base font-semibold text-white hover:bg-[#2a2a2a] transition-all inline-flex items-center justify-center"
+              className="w-full h-14 gap-2 rounded-2xl bg-white border-2 border-[#111111] px-6 text-base font-semibold text-[#111111] hover:bg-[#F5F5F5] transition-all inline-flex items-center justify-center"
             >
-              Send another payment
+              Enviar otro pago
               <RiArrowRightLine className="size-4" />
             </button>
           </div>

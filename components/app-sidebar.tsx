@@ -31,7 +31,7 @@ import {
 
 const sections = [
   {
-    label: "Main",
+    label: "Principal",
     items: [
       { title: "Inicio",        url: "/dashboard",     icon: RiHome4Line },
       { title: "Depositar",     url: "/depositar",     icon: RiArrowDownCircleLine },
@@ -40,7 +40,7 @@ const sections = [
     ],
   },
   {
-    label: "Finance",
+    label: "Finanzas",
     items: [
       { title: "Pagos",         url: "/pagos",         icon: RiMoneyDollarCircleLine },
       { title: "Inversiones",   url: "/investments",   icon: RiBarChartBoxLine },
@@ -48,7 +48,7 @@ const sections = [
     ],
   },
   {
-    label: "Settings",
+    label: "Configuración",
     items: [
       { title: "Equipo",        url: "/equipo",        icon: RiTeamLine },
       { title: "Verificación",  url: "/kyc",           icon: RiShieldLine },
@@ -92,7 +92,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         isActive={active}
                         className={`${
                           active
-                            ? "bg-[#7C3AED] text-white hover:bg-[#6D28D9] hover:text-white data-active:bg-[#7C3AED] data-active:text-white"
+                            ? "bg-[#111111] text-white hover:bg-[#222222] hover:text-white data-active:bg-[#111111] data-active:text-white"
                             : "text-[#666666] hover:bg-[#F5F5F5] hover:text-[#111111]"
                         }`}
                       >
@@ -114,7 +114,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarFooter className="p-3 border-0">
         <button className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm text-[#666666] hover:bg-[#F5F5F5] hover:text-[#111111] transition-colors">
           <RiGlobalLine className="size-4 shrink-0" />
-          <span className="flex-1 text-left">English</span>
+          <span className="flex-1 text-left">Español</span>
           <RiArrowDownSLine className="size-3.5" />
         </button>
       </SidebarFooter>
