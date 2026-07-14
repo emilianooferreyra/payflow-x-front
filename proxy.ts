@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
-const PUBLIC_PATHS = ["/login", "/register", "/forgot-password", "/reset-password", "/2fa"]
+const AUTH_PATHS = ["/login", "/register", "/forgot-password", "/reset-password", "/2fa"]
+// Rutas públicas para todos (con o sin sesión) — no redirigen a /dashboard
+const OPEN_PATHS = ["/cedears"]
+const PUBLIC_PATHS = [...AUTH_PATHS, ...OPEN_PATHS]
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
@@ -16,8 +19,9 @@ export function proxy(request: NextRequest) {
   }
 
   // Don't redirect to dashboard if the user was explicitly sent to login (session expired)
+  const isAuthPath = AUTH_PATHS.some((p) => pathname.startsWith(p))
   const isSessionExpired = request.nextUrl.searchParams.has("expired")
-  if (isPublic && isAuthenticated && !isSessionExpired) {
+  if (isAuthPath && isAuthenticated && !isSessionExpired) {
     return NextResponse.redirect(new URL("/dashboard", request.url))
   }
 
